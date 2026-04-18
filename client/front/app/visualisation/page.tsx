@@ -2,62 +2,62 @@
 
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import type  {BaseStation} from '@/components/station-map';
-import type {DtStation} from '@/components/station-map';
+import type { TransmissionStation } from '@/domain/models/TransmissionStation';
+import type { DtStation } from '@/domain/models/DtStation';
 
 const PowerGridMap = dynamic(() => import('@/components/station-map'), {
   ssr: false,
   loading: () => <div className="h-150 w-full animate-pulse bg-gray-100 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500">Učitavanje mape...</div>
 });
 
-const dummyTransmissionStations: BaseStation[] = [
-  { Id: 1, Name: 'Beograd 400/220 kV', Latitude: 44.8125, Longitude: 20.4612 },
-  { Id: 2, Name: 'Novi Sad 220/110 kV', Latitude: 45.2541, Longitude: 19.8452 },
-  { Id: 3, Name: 'Niš 220/110 kV', Latitude: 43.3268, Longitude: 21.9069 }
+const dummyTransmissionStations: TransmissionStation[] = [
+  { id: 1, name: 'Beograd 400/220 kV', latitude: 44.8125, longitude: 20.4612 },
+  { id: 2, name: 'Novi Sad 220/110 kV', latitude: 45.2541, longitude: 19.8452 },
+  { id: 3, name: 'Niš 220/110 kV', latitude: 43.3268, longitude: 21.9069 }
 ];
 
-const dummySubstations: BaseStation[] = [
-  { Id: 101, Name: 'Zemun 110/35 kV', Latitude: 44.8562, Longitude: 20.3941 },
-  { Id: 102, Name: 'Kragujevac 110/35 kV', Latitude: 44.0158, Longitude: 20.9189 },
-  { Id: 103, Name: 'Subotica 110/35 kV', Latitude: 46.1032, Longitude: 19.6647 }
+const dummySubstations: TransmissionStation[] = [
+  { id: 101, name: 'Zemun 110/35 kV', latitude: 44.8562, longitude: 20.3941 },
+  { id: 102, name: 'Kragujevac 110/35 kV', latitude: 44.0158, longitude: 20.9189 },
+  { id: 103, name: 'Subotica 110/35 kV', latitude: 46.1032, longitude: 19.6647 }
 ];
 
 const dummyDtStations: DtStation[] = [
   {
-    Id: 201,
-    Name: 'DT Dorćol 1',
-    Latitude: 44.8228,
-    Longitude: 20.4664,
-    MeterId: 'MTR-1001',
-    Feeder11Id: 'F11-BG-07',
-    Feeder33Id: 'F33-BG-02',
-    NameplateRating: 630
+    id: 201,
+    name: 'DT Dorćol 1',
+    latitude: 44.8228,
+    longitude: 20.4664,
+    meterId: 'MTR-1001',
+    feeder11Id: 'F11-BG-07',
+    feeder33Id: 'F33-BG-02',
+    nameplateRating: 630
   },
   {
-    Id: 202,
-    Name: 'DT Liman 3',
-    Latitude: 45.2395,
-    Longitude: 19.8456,
-    MeterId: 'MTR-2008',
-    Feeder11Id: 'F11-NS-03',
-    Feeder33Id: 'F33-NS-01',
-    NameplateRating: 400
+    id: 202,
+    name: 'DT Liman 3',
+    latitude: 45.2395,
+    longitude: 19.8456,
+    meterId: 'MTR-2008',
+    feeder11Id: 'F11-NS-03',
+    feeder33Id: 'F33-NS-01',
+    nameplateRating: 400
   },
   {
-    Id: 203,
-    Name: 'DT Pantelej',
-    Latitude: 43.3312,
-    Longitude: 21.9302,
-    MeterId: 'MTR-3012',
-    Feeder11Id: 'F11-NI-05',
-    Feeder33Id: 'F33-NI-02',
-    NameplateRating: 250
+    id: 203,
+    name: 'DT Pantelej',
+    latitude: 43.3312,
+    longitude: 21.9302,
+    meterId: 'MTR-3012',
+    feeder11Id: 'F11-NI-05',
+    feeder33Id: 'F33-NI-02',
+    nameplateRating: 250
   }
 ];
 
 export default function PowerGridDashboard() {
-  const [transmissionStations, setTransmissionStations] = useState<BaseStation[]>([]);
-  const [substations, setSubstations] = useState<BaseStation[]>([]);
+  const [transmissionStations, setTransmissionStations] = useState<TransmissionStation[]>([]);
+  const [substations, setSubstations] = useState<TransmissionStation[]>([]);
   const [dtStations, setDtStations] = useState<DtStation[]>([]);
   const [loading, setLoading] = useState(true);
 
