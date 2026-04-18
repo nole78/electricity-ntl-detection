@@ -16,7 +16,7 @@ import SidePanel from './components/side-panel';
 
 const PowerGridMap = dynamic(() => import('@/components/station-map'), {
   ssr: false,
-  loading: () => <div className="h-150 w-full animate-pulse bg-gray-100 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500">Učitavanje mape...</div>
+  loading: () => <div className="h-150 w-full animate-pulse bg-gray-100 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500">Loading map...</div>
 });
 
 const stationsApiClient = new StationsApiClient();
@@ -160,17 +160,17 @@ export default function PowerGridDashboard() {
   return (
     <main className="relative h-screen w-screen overflow-hidden bg-slate-100">
       <div className="absolute left-4 top-4 z-1200 w-[calc(100%-2rem)] max-w-xl rounded-xl border border-slate-200 bg-white/90 p-4 shadow-lg backdrop-blur">
-        <h1 className="text-xl font-bold text-slate-900">Mrezne Stanice</h1>
-        <p className="mt-1 text-sm text-slate-600">Klikni DT marker da otvoris detalje o stanici i povezanom feeder-u.</p>
+        <h1 className="text-xl font-bold text-slate-900">Power Grid Stations</h1>
+        <p className="mt-1 text-sm text-slate-600">Click a DT marker to open station details and its connected feeder.</p>
         <div className="mt-3 flex flex-wrap gap-4 text-sm font-medium text-slate-700">
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 rounded-full bg-red-600"></div> Prenosne stanice
+            <div className="h-3.5 w-3.5 rounded-full bg-red-600"></div> Transmission Stations
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 rounded-full bg-blue-600"></div> Podstanice
+            <div className="h-3.5 w-3.5 rounded-full bg-blue-600"></div> Substations
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 rounded-full bg-green-600"></div> DT stanice
+            <div className="h-3.5 w-3.5 rounded-full bg-green-600"></div> DT Stations
           </div>
         </div>
       </div>
@@ -183,7 +183,7 @@ export default function PowerGridDashboard() {
 
       {loading ? (
         <div className="flex h-full w-full animate-pulse items-center justify-center bg-gray-100 text-gray-500">
-          Učitavanje stanica...
+          Loading stations...
         </div>
       ) : (
         <>
