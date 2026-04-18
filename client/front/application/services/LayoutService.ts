@@ -1,9 +1,9 @@
 // application/services/LayoutService.ts
 
-import { Node } from "../../domain/models/Node";
+import { StationNode } from "../../domain/models/StationNode";
 
 export interface LayoutResult {
-  nodes: Node[];
+  nodes: StationNode[];
   scale: number;
   offsetX: number;
   offsetY: number;
@@ -12,7 +12,7 @@ export interface LayoutResult {
 export class LayoutService {
 
   static layout(
-    nodes: Node[],
+    nodes: StationNode[],
     width: number,
     height: number,
     padding: number = 50
