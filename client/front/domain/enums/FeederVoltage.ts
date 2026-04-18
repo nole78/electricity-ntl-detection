@@ -1,0 +1,1 @@
+export type FeederVoltage = "11kV" | "33kV";
