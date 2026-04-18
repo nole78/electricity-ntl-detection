@@ -5,8 +5,8 @@ export interface FeederAnomaly {
   feeder11Name: string;
   anomalyScorePercent: number;
   classification: AnomalyClassification;
-  centroidLatitude: number;
-  centroidLongitude: number;
+  centroidLatitude: number | null;
+  centroidLongitude: number | null;
 }
 
 export interface IAnomalyApiClient {

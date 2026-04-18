@@ -35,25 +35,29 @@ export class AnomalyApiClient implements IAnomalyApiClient {
     const raw = (await response.json()) as unknown[];
 
     return raw
-      .map((item, index) => this.mapAnomaly(item, index))
+      .map((item) => this.mapAnomaly(item))
       .filter((item): item is FeederAnomaly => item !== null);
   }
 
-  private mapAnomaly(item: unknown, index: number): FeederAnomaly | null {
+  private mapAnomaly(item: unknown): FeederAnomaly | null {
     if (typeof item !== "object" || item === null) {
       return null;
     }
 
     const data = item as Record<string, unknown>;
 
-    const feeder11Id = this.toNumber(data.feeder11Id, index + 1) ?? index + 1;
+    const feeder11Id = this.toNumber(data.feeder11Id);
+    if (feeder11Id === null) {
+      return null;
+    }
+
     const feeder11Name = this.toString(data.feeder11Name, `Feeder ${feeder11Id}`);
     const anomalyScorePercent = this.toNumber(data.anomalyScorePercent, 0) ?? 0;
     const classification = this.toClassification(data.classification);
     const centroidLatitude = this.toNumber(data.centroidLatitude);
     const centroidLongitude = this.toNumber(data.centroidLongitude);
 
-    if (classification === null || centroidLatitude === null || centroidLongitude === null) {
+    if (classification === null) {
       return null;
     }
 

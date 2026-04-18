@@ -2,6 +2,7 @@
 using Hack2on.Core.Entities;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using Hack2on.Core.Models;
 
 namespace Hack2on.Infrastructure.RepositoryImplementations
 {
@@ -56,6 +57,11 @@ namespace Hack2on.Infrastructure.RepositoryImplementations
 
             var results = await connection.QueryAsync<DistributionSubstation>(sql, new { Feeder11Id = feeder11Id });
             return results.ToList().AsReadOnly();
+        }
+
+        public Task<IReadOnlyDictionary<int, FeederGeometry>> GetFeederGeometryAsync(CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
         }
     }
 }

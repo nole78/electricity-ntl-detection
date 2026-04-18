@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { SummaryApiClient } from "@/infrastructure/api-client/summary-api/SummaryApiClient";
+import { SummaryApiClient } from "@/api-client/summary-api/SummaryApiClient";
 import type {
   AnomalyClassification,
   FeederAnomalyResult,
   NtlSummaryResponse,
-} from "@/infrastructure/api-client/summary-api/ISummaryApiClient";
+} from "@/api-client/summary-api/ISummaryApiClient";
 
 function formatNumber(value: number, maximumFractionDigits = 2): string {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits }).format(value);
