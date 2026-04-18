@@ -38,7 +38,6 @@ const dummyGraph: Graph = {
       name: "Novi Sad SS",
       type: "SS",
       latitude: 45.2541,
-      longitude: 19.8452,
       longitude: 19.8452
     },
     {
@@ -46,7 +45,6 @@ const dummyGraph: Graph = {
       name: "DT Dorćol",
       type: "DT",
       latitude: 44.8228,
-      longitude: 20.4664,
       longitude: 20.4664
     }
   ],
@@ -78,7 +76,6 @@ const legendItems: Array<{
   label: string;
   symbolClass: string;
 }> = [
-<<<<<<< Updated upstream
   {
     type: "TS",
     label: "Visokonaponske",
@@ -94,11 +91,6 @@ const legendItems: Array<{
     label: "Niskonaponske",
     symbolClass: "h-[14px] w-[14px] rotate-45 bg-green-600 border-2 border-white ring-2 ring-green-900"
   }
-=======
-  { type: "TS", label: "Visokonaponski", colorClass: "bg-red-600" },
-  { type: "SS", label: "Srednjenaponske", colorClass: "bg-blue-600" },
-  { type: "DT", label: "Niskonaponske", colorClass: "bg-green-600" }
->>>>>>> Stashed changes
 ];
 
 export default function PowerGridDashboard() {
