@@ -50,9 +50,9 @@ function OffendersTable({ rows }: { rows: FeederAnomalyResult[] }) {
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
-      <table className="min-w-full divide-y divide-slate-200 text-sm">
-        <thead className="bg-slate-50 text-left text-slate-700">
+    <div className="overflow-x-auto rounded-xl border border-mjau bg-white">
+      <table className="min-w-full divide-y divide-foregorund text-sm">
+        <thead className="bg-background text-left text-foreground">
           <tr>
             <th className="px-4 py-3 font-semibold">Feeder</th>
             <th className="px-4 py-3 font-semibold">Classification</th>
@@ -126,10 +126,10 @@ export default function SummaryPage() {
   }, [summaryApiClient]);
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-6 md:p-10">
+    <main className="mx-auto flex w-full max-w-6xl bg-foreground flex-col gap-6 p-6 md:p-10">
       <header className="space-y-1">
-        <h1 className="text-3xl font-bold text-slate-900">NTL Summary Dashboard</h1>
-        <p className="text-sm text-slate-600">Live overview from /api/Summary endpoint.</p>
+        <h1 className="text-3xl font-bold">NTL Summary Dashboard</h1>
+        <p className="text-sm text-background2">Live overview from /api/Summary endpoint.</p>
       </header>
 
       {loading && (
@@ -181,7 +181,7 @@ export default function SummaryPage() {
           <section className="space-y-3">
             <div>
               <h2 className="text-xl font-semibold text-slate-900">Top Offenders</h2>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-background2">
                 Window: {formatDate(summary.windowStart)} - {formatDate(summary.windowEnd)}
               </p>
             </div>
