@@ -1,5 +1,4 @@
 import { VoltageLevel } from "../types/VoltageLevel";
-import { Position } from "./Position";
 
 export interface StationNode {
   id: string;
@@ -8,6 +7,4 @@ export interface StationNode {
 
   latitude: number;   
   longitude: number;  
-
-  position: Position; // canvas
 }
