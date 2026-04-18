@@ -72,13 +72,13 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
 
         <LayersControl position="topright">
           
-          {/* Layer 1: Visokonaponske (Red) */}
-          <LayersControl.Overlay checked name="Visokonaponske podstanice">
+          {/* Layer 1: Theft suspected anomalies (Red) */}
+          <LayersControl.Overlay checked name="Theft Suspected">
             <LayerGroup>
               {transmissionStations.map((station) => (
                 <Marker key={`trans-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={transmissionIcon}>
                   <Popup>
-                    <span className="text-red-600 font-bold text-xs uppercase tracking-wider">Visokonaponska</span><br/>
+                    <span className="text-red-600 font-bold text-xs uppercase tracking-wider">Theft Suspected</span><br/>
                     <strong className="text-lg">{station.Name}</strong><br />
                     Lat: {station.Latitude} | Lng: {station.Longitude}
                   </Popup>
@@ -87,13 +87,13 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
             </LayerGroup>
           </LayersControl.Overlay>
 
-          {/* Layer 2: Srednjenaponske (Blue) */}
-          <LayersControl.Overlay checked name="Srednjenaponske podstanice">
+          {/* Layer 2: Ghost/dead meter anomalies (Blue) */}
+          <LayersControl.Overlay checked name="Ghost or Dead Meters">
             <LayerGroup>
               {substations.map((station) => (
                 <Marker key={`sub-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={substationIcon}>
                   <Popup>
-                    <span className="text-blue-600 font-bold text-xs uppercase tracking-wider">Srednjenaponska</span><br/>
+                    <span className="text-blue-600 font-bold text-xs uppercase tracking-wider">Ghost or Dead Meters</span><br/>
                     <strong className="text-lg">{station.Name}</strong><br />
                     Lat: {station.Latitude} | Lng: {station.Longitude}
                   </Popup>
@@ -102,13 +102,13 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
             </LayerGroup>
           </LayersControl.Overlay>
 
-          {/* Layer 3: Niskonaponske (Green) with extra details */}
-          <LayersControl.Overlay checked name="Niskonaponske podstanice (Dt)">
+          {/* Layer 3: Normal feeders (Green) with extra details */}
+          <LayersControl.Overlay checked name="Normal Feeders">
             <LayerGroup>
               {dtStations.map((station) => (
                 <Marker key={`dt-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={dtIcon}>
                   <Popup>
-                    <span className="text-green-600 font-bold text-xs uppercase tracking-wider">Niskonaponska</span><br/>
+                    <span className="text-green-600 font-bold text-xs uppercase tracking-wider">Normal</span><br/>
                     <strong className="text-lg">{station.Name}</strong><br />
                     <div className="mt-2 text-sm">
                       {station.NameplateRating && <div><strong>Snaga:</strong> {station.NameplateRating} kVA</div>}
