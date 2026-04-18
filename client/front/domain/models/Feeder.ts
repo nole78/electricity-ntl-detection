@@ -1,7 +1,9 @@
+import { FeederVoltage } from "../enums/FeederVoltage";
+
 export interface Feeder {
   id: string;
   name: string;
-  voltage: "11kV" | "33kV";
+  voltage: FeederVoltage;
   from: string;
   to: string;
 }
