@@ -1,1 +1,4 @@
-export type FeederVoltage = "11kV" | "33kV";
+export enum FeederVoltage {
+  MV = "11kV",
+  HV = "33kV"   
+}
