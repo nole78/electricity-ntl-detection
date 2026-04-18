@@ -39,28 +39,27 @@ const createMarkerIcon = (svg: string) => {
   });
 };
 
-const transmissionIcon = createMarkerIcon(`
-  <svg width="36" height="44" viewBox="0 0 36 44" xmlns="http://www.w3.org/2000/svg" aria-label="Transmission icon">
-    <path d="M18 2C10.268 2 4 8.268 4 16c0 9.1 14 26 14 26s14-16.9 14-26C32 8.268 25.732 2 18 2z" fill="#B91C1C"/>
-    <path d="M13 24h10M12 20h12M14 16h8M18 12v16M14 28h8" stroke="#FFF" stroke-width="1.7" stroke-linecap="round"/>
-  </svg>
-`);
 
-const substationIcon = createMarkerIcon(`
-  <svg width="36" height="44" viewBox="0 0 36 44" xmlns="http://www.w3.org/2000/svg" aria-label="Substation icon">
-    <path d="M18 2C10.268 2 4 8.268 4 16c0 9.1 14 26 14 26s14-16.9 14-26C32 8.268 25.732 2 18 2z" fill="#1D4ED8"/>
-    <rect x="11" y="12" width="14" height="12" rx="2" fill="#FFF"/>
-    <path d="M14 16h8M14 20h8M18 24v4" stroke="#1D4ED8" stroke-width="1.7" stroke-linecap="round"/>
-  </svg>
-`);
+const dtIcon = L.icon({
+  iconUrl: "/icons/DT.png",
+  iconSize: [32, 32],       // veličina ikonice
+  iconAnchor: [16, 32],     // gde “pika” marker (bottom center)
+  popupAnchor: [0, -32],    // gde popup iskače
+});
 
-const dtIcon = createMarkerIcon(`
-  <svg width="36" height="44" viewBox="0 0 36 44" xmlns="http://www.w3.org/2000/svg" aria-label="DT icon">
-    <path d="M18 2C10.268 2 4 8.268 4 16c0 9.1 14 26 14 26s14-16.9 14-26C32 8.268 25.732 2 18 2z" fill="#15803D"/>
-    <circle cx="18" cy="17" r="6" fill="#FFF"/>
-    <path d="M16.2 13.8L20 17h-2.2l1.9 3.2-3.8-3.2h2.2z" fill="#15803D"/>
-  </svg>
-`);
+const ssIcon = L.icon({
+  iconUrl: "/icons/SS.png",
+  iconSize: [30, 30],
+  iconAnchor: [15, 30],
+  popupAnchor: [0, -30],
+});
+
+const tsIcon = L.icon({
+  iconUrl: "/icons/TS.png",
+  iconSize: [34, 34],
+  iconAnchor: [17, 34],
+  popupAnchor: [0, -34],
+});
 
 const createDtClusterIcon = (count: number) => createMarkerIcon(`
   <svg width="42" height="42" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" aria-label="DT cluster icon">
@@ -136,7 +135,7 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
           <LayersControl.Overlay checked name="Transmission Stations">
             <LayerGroup>
               {transmissionStations.map((station) => (
-                <Marker key={`trans-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={transmissionIcon}>
+                <Marker key={`trans-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={tsIcon}>
                   <Popup>
                     <span className="text-red-600 font-bold text-xs uppercase tracking-wider">Transmission Station</span><br/>
                     <strong className="text-lg">{station.Name}</strong><br />
@@ -151,7 +150,7 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
           <LayersControl.Overlay checked name="Substations">
             <LayerGroup>
               {substations.map((station) => (
-                <Marker key={`sub-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={substationIcon}>
+                <Marker key={`sub-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={ssIcon}>
                   <Popup>
                     <span className="text-blue-600 font-bold text-xs uppercase tracking-wider">Substation</span><br/>
                     <strong className="text-lg">{station.Name}</strong><br />
