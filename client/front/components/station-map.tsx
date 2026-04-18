@@ -3,26 +3,12 @@
 import { MapContainer, TileLayer, Marker, Popup, LayersControl, LayerGroup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-
-// Base interface for Transmission and Substations
-export interface BaseStation {
-  Id: string | number;
-  Name: string;
-  Latitude: number;
-  Longitude: number;
-}
-
-// Extended interface for Dt (Low voltage) which has extra fields
-export interface DtStation extends BaseStation {
-  MeterId?: string | number;
-  Feeder11Id?: string | number;
-  Feeder33Id?: string | number;
-  NameplateRating?: number;
-}
+import type { TransmissionStation } from '@/domain/models/TransmissionStation';
+import type { DtStation } from '@/domain/models/DtStation';
 
 interface MapProps {
-  transmissionStations: BaseStation[];
-  substations: BaseStation[];
+  transmissionStations: TransmissionStation[];
+  substations: TransmissionStation[];
   dtStations: DtStation[];
 }
 
@@ -76,11 +62,11 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
           <LayersControl.Overlay checked name="Visokonaponske podstanice">
             <LayerGroup>
               {transmissionStations.map((station) => (
-                <Marker key={`trans-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={transmissionIcon}>
+                <Marker key={`trans-${station.id}`} position={[station.latitude, station.longitude]} icon={transmissionIcon}>
                   <Popup>
                     <span className="text-red-600 font-bold text-xs uppercase tracking-wider">Visokonaponska</span><br/>
-                    <strong className="text-lg">{station.Name}</strong><br />
-                    Lat: {station.Latitude} | Lng: {station.Longitude}
+                    <strong className="text-lg">{station.name}</strong><br />
+                    Lat: {station.latitude} | Lng: {station.longitude}
                   </Popup>
                 </Marker>
               ))}
@@ -91,11 +77,11 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
           <LayersControl.Overlay checked name="Srednjenaponske podstanice">
             <LayerGroup>
               {substations.map((station) => (
-                <Marker key={`sub-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={substationIcon}>
+                <Marker key={`sub-${station.id}`} position={[station.latitude, station.longitude]} icon={substationIcon}>
                   <Popup>
                     <span className="text-blue-600 font-bold text-xs uppercase tracking-wider">Srednjenaponska</span><br/>
-                    <strong className="text-lg">{station.Name}</strong><br />
-                    Lat: {station.Latitude} | Lng: {station.Longitude}
+                    <strong className="text-lg">{station.name}</strong><br />
+                    Lat: {station.latitude} | Lng: {station.longitude}
                   </Popup>
                 </Marker>
               ))}
@@ -106,16 +92,16 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
           <LayersControl.Overlay checked name="Niskonaponske podstanice (Dt)">
             <LayerGroup>
               {dtStations.map((station) => (
-                <Marker key={`dt-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={dtIcon}>
+                <Marker key={`dt-${station.id}`} position={[station.latitude, station.longitude]} icon={dtIcon}>
                   <Popup>
                     <span className="text-green-600 font-bold text-xs uppercase tracking-wider">Niskonaponska</span><br/>
-                    <strong className="text-lg">{station.Name}</strong><br />
+                    <strong className="text-lg">{station.name}</strong><br />
                     <div className="mt-2 text-sm">
-                      {station.NameplateRating && <div><strong>Snaga:</strong> {station.NameplateRating} kVA</div>}
-                      {station.MeterId && <div><strong>Brojilo:</strong> {station.MeterId}</div>}
-                      {station.Feeder11Id && <div><strong>SN vod:</strong> {station.Feeder11Id}</div>}
-                      {station.Feeder33Id && <div><strong>VN vod:</strong> {station.Feeder33Id}</div>}
-                      <div className="mt-1 text-gray-500 text-xs">Lat: {station.Latitude} | Lng: {station.Longitude}</div>
+                      {station.nameplateRating != null && <div><strong>Snaga:</strong> {station.nameplateRating} kVA</div>}
+                      {station.meterId != null && <div><strong>Brojilo:</strong> {station.meterId}</div>}
+                      {station.feeder11Id != null && <div><strong>SN vod:</strong> {station.feeder11Id}</div>}
+                      {station.feeder33Id != null && <div><strong>VN vod:</strong> {station.feeder33Id}</div>}
+                      <div className="mt-1 text-gray-500 text-xs">Lat: {station.latitude} | Lng: {station.longitude}</div>
                     </div>
                   </Popup>
                 </Marker>
