@@ -1,0 +1,1 @@
+export type VoltageLevel = "TS" | "SS" | "DT";
