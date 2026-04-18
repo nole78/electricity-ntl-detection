@@ -1,40 +1,50 @@
-﻿namespace Hack2on.Core.Common
+﻿namespace Hack2on.Core.Common;
+
+public sealed class AnalysisConfig
 {
-    public sealed class AnalysisConfig
-    {
-        /// <summary>
-        /// Anomaly score (%) above which a feeder is flagged as theft-suspected.
-        /// Default +20%
-        /// </summary>
-        public double TheftThresholdPercent { get; set; } = 20.0;
+    /// <summary>
+    /// Number of standard deviations above the baseline before a feeder is
+    /// flagged as theft-suspected. Default 2.0 = ~97.7% confidence of outlier.
+    /// </summary>
+    public double TheftZScoreThreshold { get; set; } = 2.0;
 
-        /// <summary>
-        /// Anomaly score (%) below which a feeder is flagged as ghost/dead
-        /// Default -20% per problem spec
-        /// </summary>
-        public double GhostThresholdPercent { get; set; } = -20.0;
+    /// <summary>
+    /// Number of standard deviations below the baseline before a feeder is
+    /// flagged as ghost/dead. Default -2.0 = ~2.3% confidence of outlier.
+    /// </summary>
+    public double GhostZScoreThreshold { get; set; } = -2.0;
 
-        /// <summary>
-        /// Assumed technical loss percentage on an 11 kV feeder (resistive + transformer).
-        /// Industry-standard range 4–7% Subtracted before NTL attribution.
-        /// </summary>
-        public double AssumedTechnicalLossPercent { get; set; } = 5.0;
+    /// <summary>
+    /// Fallback technical loss percentage when per-feeder geometry is unavailable
+    /// (e.g. missing substation coordinates).
+    /// </summary>
+    public double FallbackTechnicalLossPercent { get; set; } = 5.0;
 
-        /// <summary>
-        /// How far back from "now" (or from a requested end time) the default analysis
-        /// window extends
-        /// </summary>
-        public TimeSpan DefaultWindow { get; set; } = TimeSpan.FromDays(7);
+    /// <summary>
+    /// Standard ACSR conductor resistance for 11/33 kV distribution cables.
+    /// IEC reference value, assumed when actual cable type isn't recorded.
+    /// </summary>
+    public double CableResistanceOhmsPerKm { get; set; } = 0.3;
 
-        /// <summary>
-        /// Minimum number of DTs a feeder must have to be eligible for analysis.
-        /// Prevents statistical noise on tiny feeders
-        /// </summary>
-        public int MinDtCountForAnalysis { get; set; } = 3;
+    /// <summary>
+    /// Power factor assumption for current derivation. Typical 0.85-0.95 for
+    /// MV distribution; 0.9 is a standard mid-range default.
+    /// </summary>
+    public double AssumedPowerFactor { get; set; } = 0.9;
 
-        /// <summary>
-        /// How long to cache the anomaly results in memory.
-        /// </summary>
-        public int CacheDurationMinutes { get; set; } = 10;
-    }
+    /// <summary>
+    /// Winding factor — real cables don't run in straight lines between points.
+    /// 1.3 accounts for routing along roads, avoiding obstacles, etc.
+    /// </summary>
+    public double CableWindingFactor { get; set; } = 1.3;
+
+    /// <summary>
+    /// Assumed line voltage in kV when converting power to current.
+    /// 33 kV matches the dominant feeder class in this dataset.
+    /// </summary>
+    public double AssumedLineVoltageKv { get; set; } = 33.0;
+
+    public TimeSpan DefaultWindow { get; set; } = TimeSpan.FromDays(7);
+    public int MinDtCountForAnalysis { get; set; } = 10;
+    public int CacheDurationMinutes { get; set; } = 10;
 }

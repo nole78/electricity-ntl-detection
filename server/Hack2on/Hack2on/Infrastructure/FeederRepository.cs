@@ -67,5 +67,41 @@ namespace Hack2on.Infrastructure
 
             return await connection.QuerySingleAsync<FeederCoverage>(command);
         }
+
+        public async Task<IReadOnlyDictionary<int, FeederGeometry>> GetFeederGeometryAsync(
+            CancellationToken ct = default)
+        {
+            using var connection = _connectionFactory.Create();
+            var cmd = new CommandDefinition(
+                FeederQueries.GetFeederGeometry, cancellationToken: ct);
+
+            var rows = await connection.QueryAsync<FeederGeometryRow>(cmd);
+
+            return rows
+                .Select(r => new FeederGeometry
+                {
+                    Feeder11Id = r.Feeder11Id,
+                    SubstationLatitude = r.SubstationLatitude,
+                    SubstationLongitude = r.SubstationLongitude,
+                    TransmissionLatitude = r.TransmissionLatitude,
+                    TransmissionLongitude = r.TransmissionLongitude,
+                    DtCentroidLatitude = r.DtCentroidLatitude,
+                    DtCentroidLongitude = r.DtCentroidLongitude,
+                    DtWithCoordsCount = r.DtWithCoordsCount
+                })
+                .ToDictionary(g => g.Feeder11Id);
+        }
+
+        private sealed class FeederGeometryRow
+        {
+            public int Feeder11Id { get; set; }
+            public double? SubstationLatitude { get; set; }
+            public double? SubstationLongitude { get; set; }
+            public double? TransmissionLatitude { get; set; }
+            public double? TransmissionLongitude { get; set; }
+            public double? DtCentroidLatitude { get; set; }
+            public double? DtCentroidLongitude { get; set; }
+            public int DtWithCoordsCount { get; set; }
+        }
     }
 }

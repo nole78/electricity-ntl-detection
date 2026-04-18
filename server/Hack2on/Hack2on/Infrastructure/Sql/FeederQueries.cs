@@ -38,5 +38,24 @@
             (SELECT COUNT(DISTINCT Feeder11Id)
              FROM dbo.DistributionSubstation
              WHERE Feeder11Id IS NOT NULL)                                 AS FeedersWithAtLeastOneDt;";
+
+        public const string GetFeederGeometry = @"
+    SELECT
+        f.Id                              AS Feeder11Id,
+        ss.Latitude                       AS SubstationLatitude,
+        ss.Longitude                      AS SubstationLongitude,
+        ts.Latitude                       AS TransmissionLatitude,
+        ts.Longitude                      AS TransmissionLongitude,
+        AVG(CAST(dt.Latitude  AS FLOAT))  AS DtCentroidLatitude,
+        AVG(CAST(dt.Longitude AS FLOAT))  AS DtCentroidLongitude,
+        COUNT(dt.Id)                      AS DtWithCoordsCount
+    FROM dbo.Feeders11 f
+    LEFT JOIN dbo.Substations          ss ON ss.Id = f.SsId
+    LEFT JOIN dbo.TransmissionStations ts ON ts.Id = f.TsId
+    LEFT JOIN dbo.DistributionSubstation dt
+           ON dt.Feeder11Id = f.Id
+          AND dt.Latitude  IS NOT NULL
+          AND dt.Longitude IS NOT NULL
+    GROUP BY f.Id, ss.Latitude, ss.Longitude, ts.Latitude, ts.Longitude;";
     }
 }
