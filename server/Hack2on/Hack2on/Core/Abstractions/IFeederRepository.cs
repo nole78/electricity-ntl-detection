@@ -19,5 +19,7 @@ namespace Hack2on.Core.Abstractions
         /// </summary>
         Task<IReadOnlyList<DistributionSubstation>> GetDtsForFeederAsync(
             int feeder11Id, CancellationToken ct = default);
+
+
     }
 }
