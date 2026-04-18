@@ -126,7 +126,7 @@ export default function SummaryPage() {
   }, [summaryApiClient]);
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl bg-foreground flex-col gap-6 p-6 md:p-10">
+    <main className="mx-auto flex w-full max-w-6xl bg-foreground/80 flex-col gap-6 p-6 md:p-10">
       <header className="space-y-1">
         <h1 className="text-3xl font-bold">NTL Summary Dashboard</h1>
         <p className="text-sm text-background2">Live overview from /api/Summary endpoint.</p>
