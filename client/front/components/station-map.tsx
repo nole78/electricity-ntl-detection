@@ -5,12 +5,36 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import type { TransmissionStation } from '@/domain/models/TransmissionStation';
 import type { DtStation } from '@/domain/models/DtStation';
+import type { StationNode } from '@/domain/models/StationNode';
+import type { VoltageLevel } from '@/domain/types/VoltageLevel';
 
 interface MapProps {
   transmissionStations: TransmissionStation[];
   substations: TransmissionStation[];
   dtStations: DtStation[];
 }
+
+const stationTypeLabel: Record<VoltageLevel, string> = {
+  TS: 'Visokonaponska',
+  SS: 'Srednjenaponska',
+  DT: 'Niskonaponska'
+};
+
+const stationTypeColorClass: Record<VoltageLevel, string> = {
+  TS: 'text-red-600',
+  SS: 'text-blue-600',
+  DT: 'text-green-600'
+};
+
+const toStationNode = (station: TransmissionStation | DtStation, type: VoltageLevel): StationNode => ({
+  id: `${type}-${station.id}`,
+  name: station.name,
+  type,
+  position: {
+    x: station.longitude,
+    y: station.latitude
+  }
+});
 
 const createMarkerIcon = (svg: string) => {
   return L.divIcon({
@@ -47,6 +71,12 @@ const dtIcon = createMarkerIcon(`
 
 export default function SubstationMap({ transmissionStations, substations, dtStations }: MapProps) {
   const defaultCenter: [number, number] = [44.0165, 21.0059]; // Center of Serbia
+  const transmissionNodes = transmissionStations.map((station) => toStationNode(station, 'TS'));
+  const substationNodes = substations.map((station) => toStationNode(station, 'SS'));
+  const dtNodePairs = dtStations.map((station) => ({
+    station,
+    node: toStationNode(station, 'DT')
+  }));
 
   return (
     <div style={{ height: '600px', width: '100%', borderRadius: '8px', overflow: 'hidden', border: '1px solid #e5e7eb' }}>
@@ -61,12 +91,12 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
           {/* Layer 1: Visokonaponske (Red) */}
           <LayersControl.Overlay checked name="Visokonaponske podstanice">
             <LayerGroup>
-              {transmissionStations.map((station) => (
-                <Marker key={`trans-${station.id}`} position={[station.latitude, station.longitude]} icon={transmissionIcon}>
+              {transmissionNodes.map((node) => (
+                <Marker key={node.id} position={[node.position.y, node.position.x]} icon={transmissionIcon}>
                   <Popup>
-                    <span className="text-red-600 font-bold text-xs uppercase tracking-wider">Visokonaponska</span><br/>
-                    <strong className="text-lg">{station.name}</strong><br />
-                    Lat: {station.latitude} | Lng: {station.longitude}
+                    <span className={`${stationTypeColorClass[node.type]} font-bold text-xs uppercase tracking-wider`}>{stationTypeLabel[node.type]}</span><br/>
+                    <strong className="text-lg">{node.name}</strong><br />
+                    Lat: {node.position.y} | Lng: {node.position.x}
                   </Popup>
                 </Marker>
               ))}
@@ -76,12 +106,12 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
           {/* Layer 2: Srednjenaponske (Blue) */}
           <LayersControl.Overlay checked name="Srednjenaponske podstanice">
             <LayerGroup>
-              {substations.map((station) => (
-                <Marker key={`sub-${station.id}`} position={[station.latitude, station.longitude]} icon={substationIcon}>
+              {substationNodes.map((node) => (
+                <Marker key={node.id} position={[node.position.y, node.position.x]} icon={substationIcon}>
                   <Popup>
-                    <span className="text-blue-600 font-bold text-xs uppercase tracking-wider">Srednjenaponska</span><br/>
-                    <strong className="text-lg">{station.name}</strong><br />
-                    Lat: {station.latitude} | Lng: {station.longitude}
+                    <span className={`${stationTypeColorClass[node.type]} font-bold text-xs uppercase tracking-wider`}>{stationTypeLabel[node.type]}</span><br/>
+                    <strong className="text-lg">{node.name}</strong><br />
+                    Lat: {node.position.y} | Lng: {node.position.x}
                   </Popup>
                 </Marker>
               ))}
@@ -91,17 +121,17 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
           {/* Layer 3: Niskonaponske (Green) with extra details */}
           <LayersControl.Overlay checked name="Niskonaponske podstanice (Dt)">
             <LayerGroup>
-              {dtStations.map((station) => (
-                <Marker key={`dt-${station.id}`} position={[station.latitude, station.longitude]} icon={dtIcon}>
+              {dtNodePairs.map(({ station, node }) => (
+                <Marker key={node.id} position={[node.position.y, node.position.x]} icon={dtIcon}>
                   <Popup>
-                    <span className="text-green-600 font-bold text-xs uppercase tracking-wider">Niskonaponska</span><br/>
-                    <strong className="text-lg">{station.name}</strong><br />
+                    <span className={`${stationTypeColorClass[node.type]} font-bold text-xs uppercase tracking-wider`}>{stationTypeLabel[node.type]}</span><br/>
+                    <strong className="text-lg">{node.name}</strong><br />
                     <div className="mt-2 text-sm">
                       {station.nameplateRating != null && <div><strong>Snaga:</strong> {station.nameplateRating} kVA</div>}
                       {station.meterId != null && <div><strong>Brojilo:</strong> {station.meterId}</div>}
                       {station.feeder11Id != null && <div><strong>SN vod:</strong> {station.feeder11Id}</div>}
                       {station.feeder33Id != null && <div><strong>VN vod:</strong> {station.feeder33Id}</div>}
-                      <div className="mt-1 text-gray-500 text-xs">Lat: {station.latitude} | Lng: {station.longitude}</div>
+                      <div className="mt-1 text-gray-500 text-xs">Lat: {node.position.y} | Lng: {node.position.x}</div>
                     </div>
                   </Popup>
                 </Marker>
