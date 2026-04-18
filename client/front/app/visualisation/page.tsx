@@ -4,13 +4,16 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
 import type { Graph } from "@/domain/models/Graph";
-import type { VoltageLevel } from "@/domain/types/VoltageLevel";
 import { TransmissionStationApiClient } from "@/api-client/TransmissionStationApiClient";
+
+import { Header } from "@/components/header";
+import { Legend } from "@/components/legend";
+import { MapCard } from "@/components/map-card";
 
 const PowerGridMap = dynamic(() => import("@/components/station-map"), {
   ssr: false,
   loading: () => (
-    <div className="h-150 w-full animate-pulse bg-gray-100 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500">
+    <div className="h-[600px] flex items-center justify-center text-gray-400">
       Učitavanje mape...
     </div>
   )
@@ -18,88 +21,68 @@ const PowerGridMap = dynamic(() => import("@/components/station-map"), {
 
 const transmissionStationClient = new TransmissionStationApiClient("https://localhost:7057");
 
-const legendItems: Array<{
-  type: VoltageLevel;
-  label: string;
-  symbolClass: string;
-}> = [
-  {
-    type: "TS",
-    label: "Visokonaponske",
-    symbolClass: "h-[18px] w-[18px] rounded-full bg-red-600 border-2 border-white ring-2 ring-red-900"
-  },
-  {
-    type: "SS",
-    label: "Srednjenaponske",
-    symbolClass: "h-4 w-4 rounded-[4px] bg-blue-600 border-2 border-white ring-2 ring-blue-900"
-  },
-  {
-    type: "DT",
-    label: "Niskonaponske",
-    symbolClass: "h-[14px] w-[14px] rotate-45 bg-green-600 border-2 border-white ring-2 ring-green-900"
-  }
-];
-
 export default function PowerGridDashboard() {
   const [graph, setGraph] = useState<Graph | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const abortController = new AbortController();
+useEffect(() => {
+  const controller = new AbortController();
+  let isMounted = true;
 
-    const loadTransmissionStations = async () => {
-      try {
-        const transmissionNodes = await transmissionStationClient.getAllTransmissionStations(abortController.signal);
-        setGraph({
-          nodes: transmissionNodes,
-          edges: []
-        });
-      } catch (error) {
-        if (!abortController.signal.aborted) {
-          console.error("Failed to load transmission stations", error);
-          setGraph({ nodes: [], edges: [] });
-        }
-      } finally {
-        if (!abortController.signal.aborted) {
-          setLoading(false);
-        }
+  const load = async () => {
+    try {
+      const nodes = await transmissionStationClient.getAllTransmissionStations(
+        controller.signal
+      );
+
+      if (!isMounted) return;
+
+      setGraph({ nodes, edges: [] });
+    }catch (e: unknown) {
+      if (e instanceof Error && e.name === "AbortError") {
+        return;
       }
-    };
 
-    loadTransmissionStations();
+      console.error(e);
 
-    return () => abortController.abort();
-  }, []);
+      if (isMounted) {
+        setGraph({ nodes: [], edges: [] });
+      }
+} finally {
+      if (isMounted) setLoading(false);
+    }
+  };
+
+  load();
+
+  return () => {
+    isMounted = false;
+    controller.abort();
+  };
+}, []);
 
   return (
     <main className="p-8 max-w-7xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Elektroenergetska Mreža
-        </h1>
-        <p className="text-gray-500 mt-2">
-          Interaktivni prikaz visokonaponskih, srednjenaponskih i
-          niskonaponskih podstanica
-        </p>
-      </div>
+      <Header />
 
-      {/* Legend */}
-      <div className="flex flex-wrap gap-6 mb-4 text-sm font-medium">
-        {legendItems.map((item) => (
-          <div key={item.type} className="flex items-center gap-2">
-            <div className={item.symbolClass} />
-            {item.label}
-          </div>
-        ))}
-      </div>
+      <div className="mb-4 flex items-center justify-between">
+        <Legend />
 
-      {loading || !graph ? (
-        <div className="h-150 w-full animate-pulse bg-gray-100 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500">
-          Učitavanje podataka...
+        {/* future: filters */}
+        <div className="text-sm text-gray-400">
+          {graph?.nodes.length ?? 0} stanica
         </div>
-      ) : (
-        <PowerGridMap graph={graph} />
-      )}
+      </div>
+
+      <MapCard>
+        {loading || !graph ? (
+          <div className="h-[600px] flex items-center justify-center text-gray-400">
+            Učitavanje podataka...
+          </div>
+        ) : (
+          <PowerGridMap graph={graph} />
+        )}
+      </MapCard>
     </main>
   );
 }
