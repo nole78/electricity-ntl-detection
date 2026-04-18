@@ -17,64 +17,59 @@ function formatDate(value: string): string {
 }
 
 function getClassificationLabel(classification: AnomalyClassification): string {
-  if (classification === 0 || classification === "Normal") {
-    return "Normal";
-  }
-
-  if (classification === 1 || classification === "TheftSuspected") {
-    return "Theft suspected";
-  }
-
-  return "Ghost/dead meters";
+  if (classification === 0 || classification === "Normal") return "Normal";
+  if (classification === 1 || classification === "TheftSuspected") return "Theft suspected";
+  return "Ghost/dead";
 }
 
 function getClassificationClass(classification: AnomalyClassification): string {
   if (classification === 0 || classification === "Normal") {
-    return "bg-emerald-100 text-emerald-800";
+    return "bg-green-500/15 text-green-300 border border-green-500/30";
   }
-
   if (classification === 1 || classification === "TheftSuspected") {
-    return "bg-rose-100 text-rose-800";
+    return "bg-red-500/15 text-red-300 border border-red-500/30";
   }
-
-  return "bg-amber-100 text-amber-800";
+  return "bg-amber-500/15 text-amber-300 border border-amber-500/30";
 }
 
 function OffendersTable({ rows }: { rows: FeederAnomalyResult[] }) {
   if (rows.length === 0) {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
-        No offenders detected for the selected window.
+      <div className="rounded-2xl border border-emerald-700/40 bg-emerald-900/50 p-6 text-sm text-emerald-200/70">
+        No offenders detected.
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-mjau bg-white">
-      <table className="min-w-full divide-y divide-foregorund text-sm">
-        <thead className="bg-background text-left text-foreground">
+    <div className="overflow-x-auto rounded-2xl border border-emerald-700/40 bg-emerald-900/60 backdrop-blur">
+      <table className="min-w-full text-sm text-emerald-100">
+        <thead className="text-left text-xs uppercase tracking-wide text-emerald-300/70">
           <tr>
-            <th className="px-4 py-3 font-semibold">Feeder</th>
-            <th className="px-4 py-3 font-semibold">Classification</th>
-            <th className="px-4 py-3 font-semibold">Anomaly %</th>
-            <th className="px-4 py-3 font-semibold">Actual kWh</th>
-            <th className="px-4 py-3 font-semibold">Expected kWh</th>
-            <th className="px-4 py-3 font-semibold">Registered DT</th>
-            <th className="px-4 py-3 font-semibold">Estimated active DT</th>
+            <th className="px-4 py-3">Feeder</th>
+            <th className="px-4 py-3">Classification</th>
+            <th className="px-4 py-3">Anomaly %</th>
+            <th className="px-4 py-3">Actual</th>
+            <th className="px-4 py-3">Expected</th>
+            <th className="px-4 py-3">DT Count</th>
+            <th className="px-4 py-3">Active DT</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100 text-slate-700">
+
+        <tbody className="divide-y divide-emerald-800/40">
           {rows.map((row) => (
-            <tr key={row.feeder11Id}>
+            <tr key={row.feeder11Id} className="hover:bg-emerald-800/30 transition">
               <td className="px-4 py-3">
-                <div className="font-medium text-slate-900">{row.feeder11Name ?? `Feeder ${row.feeder11Id}`}</div>
-                <div className="text-xs text-slate-500">ID: {row.feeder11Id}</div>
+                <div className="font-semibold text-white">{row.feeder11Name ?? `Feeder ${row.feeder11Id}`}</div>
+                <div className="text-xs text-emerald-400/70">ID: {row.feeder11Id}</div>
               </td>
+
               <td className="px-4 py-3">
-                <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${getClassificationClass(row.classification)}`}>
+                <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${getClassificationClass(row.classification)}`}>
                   {getClassificationLabel(row.classification)}
                 </span>
               </td>
+
               <td className="px-4 py-3">{formatNumber(row.anomalyScorePercent)}%</td>
               <td className="px-4 py-3">{formatNumber(row.actualEnergyKwh)}</td>
               <td className="px-4 py-3">{formatNumber(row.expectedEnergyKwh)}</td>
@@ -98,19 +93,13 @@ export default function SummaryPage() {
     const controller = new AbortController();
 
     async function loadSummary() {
-      setLoading(true);
-      setError(null);
-
       try {
         const data = await summaryApiClient.getSummary({ signal: controller.signal });
         setSummary(data);
       } catch (err) {
-        if (controller.signal.aborted) {
-          return;
+        if (!controller.signal.aborted) {
+          setError(err instanceof Error ? err.message : "Failed to load");
         }
-
-        const message = err instanceof Error ? err.message : "Failed to load summary data.";
-        setError(message);
       } finally {
         if (!controller.signal.aborted) {
           setLoading(false);
@@ -119,76 +108,119 @@ export default function SummaryPage() {
     }
 
     loadSummary();
-
-    return () => {
-      controller.abort();
-    };
+    return () => controller.abort();
   }, [summaryApiClient]);
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl bg-foreground/80 flex-col gap-6 p-6 md:p-10">
-      <header className="space-y-1">
-        <h1 className="text-3xl font-bold">NTL Summary Dashboard</h1>
-        <p className="text-sm text-background2">Live overview from /api/Summary endpoint.</p>
+    <main className="relative min-h-screen overflow-x-hidden bg-emerald-950 text-emerald-50">
+      {/*BACKGROUND GLOW */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-20 top-10 h-72 w-72 rounded-full bg-green-500/20 blur-3xl" />
+        <div className="absolute right-0 top-20 h-80 w-80 rounded-full bg-emerald-400/20 blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-lime-500/20 blur-3xl" />
+      </div>
+
+      <div className="relative mx-auto w-full max-w-7xl px-6 pb-14 pt-10 md:px-10">
+        {/* HEADER */}
+      <header className="rounded-3xl border border-emerald-700/60 bg-emerald-900/70 p-7 shadow-2xl backdrop-blur md:p-10 mb-8">        <div className="inline-flex rounded-full border border-orange-400/40 bg-orange-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-orange-300">
+          Grid Analytics
+        </div>
+
+        <h1 className="mt-4 text-3xl font-bold tracking-tight text-white md:text-5xl">
+          NTL Analytics Dashboard
+        </h1>
+
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-emerald-100/80 md:text-base">
+          Real-time overview of non-technical losses, feeder performance, and anomaly detection results across the distribution network.
+        </p>
       </header>
 
-      {loading && (
-        <div className="rounded-xl border border-slate-200 bg-white p-6 text-slate-500">
-          Loading summary metrics...
-        </div>
-      )}
+        {loading && (
+          <div className="rounded-2xl bg-emerald-900/50 p-6 text-emerald-200">
+            Loading summary...
+          </div>
+        )}
 
-      {!loading && error && (
-        <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 text-rose-700">{error}</div>
-      )}
+        {error && (
+          <div className="rounded-2xl bg-red-500/20 p-6 text-red-300">
+            {error}
+          </div>
+        )}
 
-      {!loading && !error && summary && (
-        <>
-          <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <article className="rounded-xl border border-slate-200 bg-white p-4">
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Feeders analyzed</h2>
-              <p className="mt-2 text-2xl font-bold text-slate-900">{formatNumber(summary.totalFeedersAnalyzed, 0)}</p>
-            </article>
-            <article className="rounded-xl border border-slate-200 bg-white p-4">
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Estimated NTL %</h2>
-              <p className="mt-2 text-2xl font-bold text-slate-900">{formatNumber(summary.estimatedNtlPercent)}%</p>
-            </article>
-            <article className="rounded-xl border border-slate-200 bg-white p-4">
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Delivered energy</h2>
-              <p className="mt-2 text-2xl font-bold text-slate-900">{formatNumber(summary.totalEnergyDeliveredKwh)} kWh</p>
-            </article>
-            <article className="rounded-xl border border-slate-200 bg-white p-4">
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Estimated NTL energy</h2>
-              <p className="mt-2 text-2xl font-bold text-slate-900">{formatNumber(summary.estimatedNtlEnergyKwh)} kWh</p>
-            </article>
-          </section>
+        {summary && (
+          <>
+            {/*KPI CARDS */}
+            <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="card">
+                <div className="text-orange-300 text-2xl font-bold">
+                  {formatNumber(summary.totalFeedersAnalyzed, 0)}
+                </div>
+                <p className="text-sm text-emerald-200/70">Feeders analyzed</p>
+              </div>
 
-          <section className="grid gap-4 sm:grid-cols-3">
-            <article className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-emerald-700">Normal</h2>
-              <p className="mt-2 text-2xl font-bold text-emerald-900">{formatNumber(summary.normalCount, 0)}</p>
-            </article>
-            <article className="rounded-xl border border-rose-200 bg-rose-50 p-4">
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-rose-700">Theft suspected</h2>
-              <p className="mt-2 text-2xl font-bold text-rose-900">{formatNumber(summary.theftSuspectedCount, 0)}</p>
-            </article>
-            <article className="rounded-xl border border-amber-200 bg-amber-50 p-4">
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-amber-700">Ghost/dead</h2>
-              <p className="mt-2 text-2xl font-bold text-amber-900">{formatNumber(summary.ghostOrDeadCount, 0)}</p>
-            </article>
-          </section>
+              <div className="card">
+                <div className="text-green-300 text-2xl font-bold">
+                  {formatNumber(summary.estimatedNtlPercent)}%
+                </div>
+                <p className="text-sm text-emerald-200/70">Estimated NTL</p>
+              </div>
 
-          <section className="space-y-3">
-            <div>
-              <h2 className="text-xl font-semibold text-slate-900">Top Offenders</h2>
-              <p className="text-sm text-background2">
-                Window: {formatDate(summary.windowStart)} - {formatDate(summary.windowEnd)}
+              <div className="card">
+                <div className="text-blue-300 text-2xl font-bold">
+                  {formatNumber(summary.totalEnergyDeliveredKwh)} kWh
+                </div>
+                <p className="text-sm text-emerald-200/70">Energy Delivered</p>
+              </div>
+
+              <div className="card">
+                <div className="text-red-300 text-2xl font-bold">
+                  {formatNumber(summary.estimatedNtlEnergyKwh)} kWh
+                </div>
+                <p className="text-sm text-emerald-200/70">NTL Energy</p>
+              </div>
+            </section>
+
+            {/*DISTRIBUTION */}
+            <section className="mt-10 grid gap-5 sm:grid-cols-3">
+              <div className="rounded-2xl bg-green-500/10 border border-green-500/30 p-5 text-center">
+                <div className="text-2xl font-bold text-green-300">{summary.normalCount}</div>
+                <p className="text-sm text-green-200/70">Normal</p>
+              </div>
+
+              <div className="rounded-2xl bg-red-500/10 border border-red-500/30 p-5 text-center">
+                <div className="text-2xl font-bold text-red-300">{summary.theftSuspectedCount}</div>
+                <p className="text-sm text-red-200/70">Theft</p>
+              </div>
+
+              <div className="rounded-2xl bg-amber-500/10 border border-amber-500/30 p-5 text-center">
+                <div className="text-2xl font-bold text-amber-300">{summary.ghostOrDeadCount}</div>
+                <p className="text-sm text-amber-200/70">Ghost/Dead</p>
+              </div>
+            </section>
+
+            {/*TABLE */}
+            <section className="mt-12 space-y-3">
+              <h2 className="text-2xl font-semibold text-white">Top Offenders</h2>
+              <p className="text-sm text-emerald-200/60">
+                {formatDate(summary.windowStart)} → {formatDate(summary.windowEnd)}
               </p>
-            </div>
-            <OffendersTable rows={summary.topOffenders} />
-          </section>
-        </>
-      )}
+
+              <OffendersTable rows={summary.topOffenders} />
+            </section>
+          </>
+        )}
+      </div>
+
+      {/* reusable card class */}
+      <style jsx>{`
+        .card {
+          background: rgba(6, 78, 59, 0.6);
+          border: 1px solid rgba(16, 185, 129, 0.3);
+          border-radius: 16px;
+          padding: 20px;
+          backdrop-filter: blur(10px);
+        }
+      `}</style>
     </main>
   );
 }
