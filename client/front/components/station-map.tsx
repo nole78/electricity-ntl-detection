@@ -64,7 +64,7 @@ export default function PowerGridMap({ graph }: Props) {
     <MapContainer
       center={center}
       zoom={7}
-      className="h-150 w-full rounded-lg border"
+      className="h-[600px] w-full"
     >
       <TileLayer
         attribution='&copy; OpenStreetMap contributors'
@@ -93,7 +93,7 @@ export default function PowerGridMap({ graph }: Props) {
         );
       })}
 
-      {/* 📍 NODE-OVI (markeri) */}
+      {/* NODES */}
       {graph.nodes.map(node => (
         <Marker
           key={node.id}
