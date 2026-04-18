@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 
 import type { Graph } from "@/domain/models/Graph";
 import type { VoltageLevel } from "@/domain/types/VoltageLevel";
-import { FeederVoltage } from "@/domain/types/FeederVoltage";
+import { TransmissionStationApiClient } from "@/api-client/TransmissionStationApiClient";
 
 const PowerGridMap = dynamic(() => import("@/components/station-map"), {
   ssr: false,
@@ -16,60 +16,7 @@ const PowerGridMap = dynamic(() => import("@/components/station-map"), {
   )
 });
 
-// 🔥 DUMMY GRAPH
-const dummyGraph: Graph = {
-  nodes: [
-    {
-      id: "TS-1",
-      name: "Beograd TS",
-      type: "TS",
-      latitude: 44.8125,
-      longitude: 20.4612
-    },
-    {
-      id: "SS-1",
-      name: "Zemun SS",
-      type: "SS",
-      latitude: 44.8562,
-      longitude: 20.3941
-    },
-    {
-      id: "SS-2",
-      name: "Novi Sad SS",
-      type: "SS",
-      latitude: 45.2541,
-      longitude: 19.8452
-    },
-    {
-      id: "DT-1",
-      name: "DT Dorćol",
-      type: "DT",
-      latitude: 44.8228,
-      longitude: 20.4664
-    }
-  ],
-
-  edges: [
-    {
-      id: "E-1",
-      from: "TS-1",
-      to: "SS-1",
-      voltage: "33KV" as FeederVoltage
-    },
-    {
-      id: "E-2",
-      from: "TS-1",
-      to: "SS-2",
-      voltage: "33KV" as FeederVoltage
-    },
-    {
-      id: "E-3",
-      from: "SS-1",
-      to: "DT-1",
-      voltage: "11KV" as FeederVoltage
-    }
-  ]
-};
+const transmissionStationClient = new TransmissionStationApiClient("https://localhost:7057");
 
 const legendItems: Array<{
   type: VoltageLevel;
@@ -98,12 +45,30 @@ export default function PowerGridDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setGraph(dummyGraph);
-      setLoading(false);
-    }, 300);
+    const abortController = new AbortController();
 
-    return () => clearTimeout(timer);
+    const loadTransmissionStations = async () => {
+      try {
+        const transmissionNodes = await transmissionStationClient.getAllTransmissionStations(abortController.signal);
+        setGraph({
+          nodes: transmissionNodes,
+          edges: []
+        });
+      } catch (error) {
+        if (!abortController.signal.aborted) {
+          console.error("Failed to load transmission stations", error);
+          setGraph({ nodes: [], edges: [] });
+        }
+      } finally {
+        if (!abortController.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadTransmissionStations();
+
+    return () => abortController.abort();
   }, []);
 
   return (
