@@ -1,0 +1,6 @@
+@Hack2on_HostAddress = http://localhost:5098
+
+GET {{Hack2on_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
