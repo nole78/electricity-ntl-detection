@@ -1,14 +1,17 @@
-import { EdgeDTO } from "../dto/EdgeDTO";
-import { NodeDTO } from "../dto/NodeDTO";
+import { Graph } from "@/domain/models/Graph";
+import { GraphBuilder } from "./GraphBuilder";
 
 export class GraphService {
-  static buildGraph(nodes: NodeDTO[], edges: EdgeDTO[]) {
-    const nodeMap = new Map(nodes.map(n => [n.id, n]));
+  static async getGraph(): Promise<Graph> {
+    const data = await fetch("/api/graph").then(r => r.json());
 
-    return edges.map(e => ({
-      ...e,
-      from: nodeMap.get(e.fromId),
-      to: nodeMap.get(e.toId)
-    }));
+    return GraphBuilder.build(
+      data.transmissionStations,
+      data.substations,
+      data.dt,
+      data.feeder11,
+      data.feeder33,
+      data.links
+    );
   }
 }
