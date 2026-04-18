@@ -33,7 +33,11 @@ public sealed class AnalysisConfig
     public double AssumedPowerFactor { get; set; } = 0.9;
 
     /// <summary>
+<<<<<<< HEAD
     /// Winding factor — real cables don't run in straight lines between points.
+=======
+    /// Winding factor real cables don't run in straight lines between points.
+>>>>>>> powerfinal
     /// 1.3 accounts for routing along roads, avoiding obstacles, etc.
     /// </summary>
     public double CableWindingFactor { get; set; } = 1.3;
