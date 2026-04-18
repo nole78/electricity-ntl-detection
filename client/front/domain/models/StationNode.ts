@@ -5,5 +5,9 @@ export interface StationNode {
   id: string;
   name: string;
   type: VoltageLevel;
-  position: Position;
+
+  latitude: number;   
+  longitude: number;  
+
+  position: Position; // canvas
 }
