@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import type { TransmissionStation } from '@/domain/models/TransmissionStation';
 import type { DtStation } from '@/domain/models/DtStation';
+import type { VoltageLevel } from '@/domain/types/VoltageLevel';
 
 const PowerGridMap = dynamic(() => import('@/components/station-map'), {
   ssr: false,
@@ -55,6 +56,12 @@ const dummyDtStations: DtStation[] = [
   }
 ];
 
+const legendItems: Array<{ type: VoltageLevel; label: string; colorClass: string }> = [
+  { type: 'TS', label: 'Visokonaponske', colorClass: 'bg-red-600' },
+  { type: 'SS', label: 'Srednjenaponske', colorClass: 'bg-blue-600' },
+  { type: 'DT', label: 'Niskonaponske', colorClass: 'bg-green-600' }
+];
+
 export default function PowerGridDashboard() {
   const [transmissionStations, setTransmissionStations] = useState<TransmissionStation[]>([]);
   const [substations, setSubstations] = useState<TransmissionStation[]>([]);
@@ -81,15 +88,11 @@ export default function PowerGridDashboard() {
       
       {/* Legend */}
       <div className="flex flex-wrap gap-6 mb-4 text-sm font-medium">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-red-600"></div> Visokonaponske
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-blue-600"></div> Srednjenaponske
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-green-600"></div> Niskonaponske
-        </div>
+        {legendItems.map((item) => (
+          <div key={item.type} className="flex items-center gap-2">
+            <div className={`w-4 h-4 rounded-full ${item.colorClass}`}></div> {item.label}
+          </div>
+        ))}
       </div>
 
       {loading ? (
