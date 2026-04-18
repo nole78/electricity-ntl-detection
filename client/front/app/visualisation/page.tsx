@@ -9,6 +9,7 @@ import { TransmissionStationApiClient } from "@/api-client/TransmissionStationAp
 import { Header } from "@/components/header";
 import { Legend } from "@/components/legend";
 import { MapCard } from "@/components/map-card";
+import { StationDetailsPanel } from "@/components/station-details-panel";
 
 const PowerGridMap = dynamic(() => import("@/components/station-map"), {
   ssr: false,
@@ -18,13 +19,16 @@ const PowerGridMap = dynamic(() => import("@/components/station-map"), {
     </div>
   )
 });
-
 const transmissionStationClient = new TransmissionStationApiClient("https://localhost:7057");
 
 export default function PowerGridDashboard() {
   const [graph, setGraph] = useState<Graph | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
+  const selectedNode =
+  graph?.nodes.find(n => n.id === selectedNodeId) || null;
+  
 useEffect(() => {
   const controller = new AbortController();
   let isMounted = true;
@@ -74,15 +78,25 @@ useEffect(() => {
         </div>
       </div>
 
+      <div className="relative">
       <MapCard>
         {loading || !graph ? (
           <div className="h-[600px] flex items-center justify-center text-gray-400">
-            Učitavanje podataka...
+            Učitavanje...
           </div>
         ) : (
-          <PowerGridMap graph={graph} />
-        )}
-      </MapCard>
+          <PowerGridMap
+            graph={graph}
+            onNodeClick={setSelectedNodeId}
+          />
+          )}
+        </MapCard>
+
+        <StationDetailsPanel
+          node={selectedNode}
+          onClose={() => setSelectedNodeId(null)}
+        />
+      </div>
     </main>
   );
 }

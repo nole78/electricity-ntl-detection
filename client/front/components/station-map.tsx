@@ -16,6 +16,7 @@ import { VoltageLevel } from "@/domain/types/VoltageLevel";
 
 type Props = {
   graph: Graph;
+  onNodeClick?: (nodeId: string) => void;
 };
 
 // Next.js does not automatically resolve Leaflet's default marker images.
@@ -50,7 +51,7 @@ const voltageLevelIcons: Record<VoltageLevel, L.DivIcon> = {
   })
 };
 
-export default function PowerGridMap({ graph }: Props) {
+export default function PowerGridMap({ graph, onNodeClick }: Props) {
 
   // centar mape (fallback ako nema node-ova)
   const center: [number, number] =
@@ -99,6 +100,9 @@ export default function PowerGridMap({ graph }: Props) {
           key={node.id}
           position={[node.latitude, node.longitude]}
           icon={getNodeIcon(node.type)}
+          eventHandlers={{
+            click: () => onNodeClick?.(node.id)
+          }}
         >
           <Popup>
             <div className="text-sm">
