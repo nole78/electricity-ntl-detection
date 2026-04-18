@@ -35,6 +35,6 @@
         /// <summary>
         /// How long to cache the anomaly results in memory.
         /// </summary>
-        public TimeSpan CacheDuration { get; set; } = TimeSpan.FromMinutes(10);
+        public int CacheDurationMinutes { get; set; } = 10;
     }
 }

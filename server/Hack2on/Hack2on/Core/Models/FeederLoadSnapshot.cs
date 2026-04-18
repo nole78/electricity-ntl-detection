@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// Aggregated energy throughput for a single Feeder11 over an analysis window
-    /// Computed from hourly deltas of the head-    end meter's cumulative register
+    /// Computed from hourly deltas of the head-  end meter's cumulative register
     /// </summary>
     public sealed class FeederLoadSnapshot
     {
