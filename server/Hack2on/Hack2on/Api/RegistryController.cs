@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Hack2on.Controllers;
 
 [ApiController]
-[Route("api")]
+[Route("api/registry")]
 public sealed class RegistryController : ControllerBase
 {
     private readonly IRegistryRepository _registry;
