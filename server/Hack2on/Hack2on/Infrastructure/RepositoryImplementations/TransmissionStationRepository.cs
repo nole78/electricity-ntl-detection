@@ -13,7 +13,7 @@ namespace Hack2on.Infrastructure.RepositoryImplementations
         {
             using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync(ct);
-            const string sql = "SELECT Id, Name, Latitude, Longitude FROM TransmissionStation ORDER BY Name";
+            const string sql = "SELECT Id, Name, Latitude, Longitude FROM TransmissionStations ORDER BY Name";
             var results = await connection.QueryAsync<TransmissionStation>(sql);
             return results.ToList().AsReadOnly();
         }
