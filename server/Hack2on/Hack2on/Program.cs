@@ -62,6 +62,8 @@ builder.Services.AddSingleton<AnomalyScorer>();
 builder.Services.AddScoped<NtlDetectionPipeline>();
 builder.Services.AddScoped<IAnomalyDetector, CachedAnomalyDetector>();
 
+builder.Services.AddScoped<ISubstationRepository>(_ => new SubstationRepository(connectionString));
+builder.Services.AddScoped<ITransmissionStationRepository>(_ => new TransmissionStationRepository(connectionString));
 
 builder.Services.AddScoped<IOutageRepository>(_ => new OutageRepository(connectionString));
 builder.Services.AddScoped<IOutageService, OutageService>();

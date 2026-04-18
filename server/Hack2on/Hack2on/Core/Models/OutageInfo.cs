@@ -11,7 +11,7 @@
     public class OutageInfo
     {
         public int MeterId { get; set; }
-        public DateTime DetectedAt { get; set; }
+        public DateTime? DetectedAt { get; set; }
         public string Description { get; set; } = string.Empty;
         public int? DtId { get; set; }
         public string? DtName { get; set; }
@@ -23,6 +23,8 @@
         public string? Feeder33Name { get; set; }
         public int? TransmissionStationId { get; set; }
         public string? TransmissionStationName { get; set; }
+        public decimal? Latitude { get; set; }
+        public decimal? Longitude { get; set; }
         public OutageType OutageType { get; set; }
     }
 }
