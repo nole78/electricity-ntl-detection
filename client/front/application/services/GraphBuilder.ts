@@ -26,8 +26,15 @@ export class GraphBuilder {
     ];
 
     const edges = [
-      ...f33.flatMap(f => EdgeMapper.fromFeeder33ToSubstations(f, links)),
-      ...f11.map(EdgeMapper.fromFeeder11)
+      // 33kV
+      ...f33.flatMap(f => 
+        EdgeMapper.fromFeeder33ToSubstations(f, links, dt)
+      ),
+
+      // 11kV
+      ...f11.flatMap(f => 
+        EdgeMapper.fromFeeder11(f, dt)
+      )
     ];
 
     return { nodes, edges };
