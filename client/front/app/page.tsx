@@ -4,191 +4,124 @@ import Link from "next/link";
 
 export default function LandingPage() {
   return (
-    <main className="text-white bg-foreground/80 max-w-7xl m-auto">
+    <main className="relative min-h-screen overflow-x-hidden bg-emerald-950 text-emerald-50">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-green-500/25 blur-3xl" />
+        <div className="absolute right-0 top-16 h-80 w-80 rounded-full bg-emerald-400/20 blur-3xl" />
+        <div className="absolute left-1/4 top-80 h-80 w-80 rounded-full bg-green-300/15 blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-lime-500/20 blur-3xl" />
+      </div>
 
-      {/* HERO */}
-      <section className="min-h-[80vh] flex flex-col justify-center items-center text-center px-6">
-        <h1 className="text-5xl font-bold mb-6">
-          NTL Detection System
-        </h1>
+      <div className="relative mx-auto max-w-7xl px-6 pb-20 pt-12 md:px-10">
+        <section className="rounded-3xl border border-emerald-700/60 bg-emerald-900/70 p-8 shadow-2xl backdrop-blur md:p-12">
+          <div className="inline-flex rounded-full border border-orange-400/40 bg-orange-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-orange-300">
+            Grid Intelligence Platform
+          </div>
 
-        <p className="max-w-2xl text-lg text-header mb-6">
-          A full-stack analytics platform for detecting non-technical losses 
-          in electrical distribution networks across Nigeria.
-        </p>
+          <h1 className="mt-6 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-white md:text-6xl">
+            NTL Detection System for Faster Feeder Action
+          </h1>
 
-        <div className="flex gap-4">
-          <Link
-            href="/visualisation"
-            className="px-6 py-3 bg-orange-500 hover:bg-orange-600 rounded-lg font-medium"
-          >
-            Open Map
-          </Link>
-
-          <Link
-            href="/summary"
-            className="px-6 py-3 border border-background2 hover:bg-white/10 rounded-lg"
-          >
-            View Statistics
-          </Link>
-        </div>
-      </section>
-
-      {/* PROBLEM */}
-      <section className="py-20 px-6 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-semibold mb-6">
-          The Problem
-        </h2>
-
-        <p className="text-background2 max-w-3xl mb-4">
-          Nigerian distribution companies report losses between 15% and 30% 
-          of delivered energy. Technical losses account for only 4–8%.
-        </p>
-
-        <p className="text-background2 max-w-3xl mb-4">
-          The remaining losses are non-technical — caused by electricity theft, 
-          faulty meters, and ghost connections.
-        </p>
-
-        <p className="text-background2 max-w-3xl">
-          These losses represent billions of naira in lost revenue annually.
-        </p>
-      </section>
-
-      {/* SOLUTION */}
-      <section className="py-20 px-6 bg-background/40">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-semibold mb-6">
-            Our Solution
-          </h2>
-
-          <p className="text-background2 max-w-3xl mb-4">
-            We built a statistical detection system operating at the 11kV feeder level — 
-            the last trusted measurement point in the grid.
+          <p className="mt-6 max-w-3xl text-base leading-relaxed text-emerald-100/80 md:text-lg">
+            A full-stack analytics platform for detecting non-technical losses in electrical distribution networks across Nigeria.
+            Engineers get a ranked list of feeders, mapped context, and a clear inspection starting point.
           </p>
 
-          <p className="text-background2 max-w-3xl mb-4">
-            Using Z-score anomaly detection, physical loss modeling, and robust 
-            statistical baselines, the system identifies feeders that require inspection.
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Link
+              href="/visualisation"
+              className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white shadow-lg shadow-orange-950/40 transition hover:bg-orange-400"
+            >
+              Open Map
+            </Link>
+            <Link
+              href="/summary"
+              className="rounded-xl border border-emerald-400/60 bg-emerald-800/40 px-6 py-3 font-semibold text-emerald-50 transition hover:border-blue-400/60 hover:bg-blue-500/10"
+            >
+              View Summary
+            </Link>
+          </div>
+        </section>
+
+        <section className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <article className="rounded-2xl border border-orange-500/30 bg-emerald-900/65 p-5">
+            <div className="text-2xl font-bold text-orange-300">40.6 GWh</div>
+            <p className="mt-1 text-sm text-emerald-100/80">Energy Delivered</p>
+          </article>
+          <article className="rounded-2xl border border-green-500/30 bg-emerald-900/65 p-5">
+            <div className="text-2xl font-bold text-green-300">5.2%</div>
+            <p className="mt-1 text-sm text-emerald-100/80">Technical Losses</p>
+          </article>
+          <article className="rounded-2xl border border-red-500/30 bg-emerald-900/65 p-5">
+            <div className="text-2xl font-bold text-red-300">5.7%</div>
+            <p className="mt-1 text-sm text-emerald-100/80">NTL Losses</p>
+          </article>
+          <article className="rounded-2xl border border-blue-500/30 bg-emerald-900/65 p-5">
+            <div className="text-2xl font-bold text-blue-300">21</div>
+            <p className="mt-1 text-sm text-emerald-100/80">Flagged Feeders</p>
+          </article>
+        </section>
+
+        <section className="mt-14 grid gap-6 lg:grid-cols-2">
+          <article className="rounded-2xl border border-emerald-700/60 bg-emerald-900/65 p-6">
+            <h2 className="text-2xl font-semibold text-white">The Problem</h2>
+            <p className="mt-4 leading-relaxed text-emerald-100/80">
+              Nigerian distribution companies report losses between 15% and 30% of delivered energy. Technical losses account
+              for only 4–8%, while the rest are non-technical losses driven by theft, faulty metering, and ghost connections.
+            </p>
+          </article>
+
+          <article className="rounded-2xl border border-emerald-700/60 bg-emerald-900/65 p-6">
+            <h2 className="text-2xl font-semibold text-white">Our Approach</h2>
+            <p className="mt-4 leading-relaxed text-emerald-100/80">
+              We analyze feeder-level behavior using robust baselines, anomaly scoring, and physical-loss context. The output is
+              operationally focused: who to inspect, where to inspect, and why.
+            </p>
+          </article>
+        </section>
+
+        <section className="mt-14">
+          <h2 className="text-2xl font-semibold text-white md:text-3xl">How It Works</h2>
+          <div className="mt-6 grid gap-5 md:grid-cols-3">
+            <article className="rounded-2xl border border-red-500/25 bg-emerald-900/65 p-5">
+              <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-600/20 text-sm font-bold text-red-300">1</div>
+              <h3 className="mt-3 font-semibold text-white">Data Processing</h3>
+              <p className="mt-2 text-sm leading-relaxed text-emerald-100/80">
+                3.19 million readings are transformed into consistent hourly consumption snapshots.
+              </p>
+            </article>
+            <article className="rounded-2xl border border-blue-500/25 bg-emerald-900/65 p-5">
+              <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-600/20 text-sm font-bold text-blue-300">2</div>
+              <h3 className="mt-3 font-semibold text-white">Statistical Detection</h3>
+              <p className="mt-2 text-sm leading-relaxed text-emerald-100/80">
+                Median-based normalization and anomaly scoring isolate feeders with unusual behavior.
+              </p>
+            </article>
+            <article className="rounded-2xl border border-green-500/25 bg-emerald-900/65 p-5">
+              <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-600/20 text-sm font-bold text-green-300">3</div>
+              <h3 className="mt-3 font-semibold text-white">Actionable Output</h3>
+              <p className="mt-2 text-sm leading-relaxed text-emerald-100/80">
+                Teams receive a prioritized, map-ready list of feeders requiring field inspection.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section className="mt-14 rounded-3xl border border-emerald-700/70 bg-emerald-900/70 p-8 text-center md:p-10">
+          <h2 className="text-3xl font-semibold text-white">Start Exploring</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-emerald-100/80">
+            Jump into the live map to inspect stations and feeder clusters, or open summary analytics for the latest KPIs.
           </p>
-
-          <p className="text-background2 max-w-3xl">
-            The output is actionable: engineers know exactly which feeders to inspect today.
-          </p>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section className="py-20 px-6 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-semibold mb-10">
-          How It Works
-        </h2>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="p-5 bg-white/5 rounded-xl">
-            <h3 className="font-semibold mb-2">Data Processing</h3>
-            <p className="text-background2 text-sm">
-              3.19 million meter readings transformed into hourly consumption using SQL window functions.
-            </p>
+          <div className="mt-7 flex flex-wrap justify-center gap-4">
+            <Link href="/visualisation" className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-400">
+              Explore Visualisation
+            </Link>
+            <Link href="/summary" className="rounded-xl border border-blue-400/50 px-6 py-3 font-semibold text-blue-200 transition hover:bg-blue-500/10">
+              Open Analytics
+            </Link>
           </div>
-
-          <div className="p-5 bg-white/5 rounded-xl">
-            <h3 className="font-semibold mb-2">Statistical Analysis</h3>
-            <p className="text-background2 text-sm">
-              Median-based normalization and Z-score detection isolate abnormal feeders.
-            </p>
-          </div>
-
-          <div className="p-5 bg-white/5 rounded-xl">
-            <h3 className="font-semibold mb-2">Physical Modeling</h3>
-            <p className="text-background2 text-sm">
-              Technical losses computed using real electrical formulas and network geometry.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* RESULTS */}
-      <section className="py-20 px-6 bg-background/40">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-semibold mb-10">
-            Results
-          </h2>
-
-          <div className="grid md:grid-cols-4 gap-6 text-center">
-            <div className="p-5 bg-black/30 rounded-xl">
-              <div className="text-3xl font-bold text-orange-400">40.6 GWh</div>
-              <div className="text-sm text-background2">Energy Delivered</div>
-            </div>
-
-            <div className="p-5 bg-black/30 rounded-xl">
-              <div className="text-3xl font-bold text-green-400">5.2%</div>
-              <div className="text-sm text-background2">Technical Losses</div>
-            </div>
-
-            <div className="p-5 bg-black/30 rounded-xl">
-              <div className="text-3xl font-bold text-red-400">5.7%</div>
-              <div className="text-sm text-background2">NTL Losses</div>
-            </div>
-
-            <div className="p-5 bg-black/30 rounded-xl">
-              <div className="text-3xl font-bold text-blue-400">21</div>
-              <div className="text-sm text-background2">Flagged Feeders</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FEATURES */}
-      <section className="py-20 px-6 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-semibold mb-10">
-          Platform Features
-        </h2>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="p-6 bg-white/5 rounded-xl">
-            <h3 className="font-semibold mb-2">Interactive Map</h3>
-            <p className="text-background2 text-sm">
-              Visualize substations and feeders with real-time anomaly classification.
-            </p>
-          </div>
-
-          <div className="p-6 bg-white/5 rounded-xl">
-            <h3 className="font-semibold mb-2">Statistical Dashboard</h3>
-            <p className="text-background2 text-sm">
-              Track losses, anomaly distribution, and feeder performance metrics.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20 text-center">
-        <h2 className="text-3xl font-semibold mb-4">
-          Explore the System
-        </h2>
-
-        <p className="text-background2 mb-6">
-          Navigate through the platform and inspect anomalies directly.
-        </p>
-
-        <div className="flex justify-center gap-4">
-          <Link
-            href="/visualisation"
-            className="px-6 py-3 bg-orange-500 hover:bg-orange-600 rounded-lg"
-          >
-            Open Map
-          </Link>
-
-          <Link
-            href="/summary"
-            className="px-6 py-3 border border-background2 hover:bg-white/10 rounded-lg"
-          >
-            View Analytics
-          </Link>
-        </div>
-      </section>
-
+        </section>
+      </div>
     </main>
   );
 }
