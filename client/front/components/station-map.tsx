@@ -42,9 +42,9 @@ const createMarkerIcon = (svg: string) => {
 
 const dtIcon = L.icon({
   iconUrl: "/icons/DT.png",
-  iconSize: [32, 32],       // veličina ikonice
-  iconAnchor: [16, 32],     // gde “pika” marker (bottom center)
-  popupAnchor: [0, -32],    // gde popup iskače
+  iconSize: [32, 32],       
+  iconAnchor: [16, 32],      
+  popupAnchor: [0, -32],    
 });
 
 const ssIcon = L.icon({
@@ -63,8 +63,8 @@ const tsIcon = L.icon({
 
 const createDtClusterIcon = (count: number) => createMarkerIcon(`
   <svg width="42" height="42" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" aria-label="DT cluster icon">
-    <circle cx="21" cy="21" r="18" fill="#15803D" stroke="#ffffff" stroke-width="3"/>
-    <text x="21" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">${count}</text>
+    <circle cx="21" cy="21" r="18" fill="#FFA02E" stroke="#468432" stroke-width="3"/>
+    <text x="21" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="#468432">${count}</text>
   </svg>
 `);
 

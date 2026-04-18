@@ -164,13 +164,13 @@ export default function PowerGridDashboard() {
         <p className="mt-1 text-sm text-slate-600">Click a DT marker to open station details and its connected feeder.</p>
         <div className="mt-3 flex flex-wrap gap-4 text-sm font-medium text-slate-700">
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 rounded-full bg-red-600"></div> Transmission Stations
+            <img src="icons/TS.png" className='w-10 h-10'/> Transmission Stations
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 rounded-full bg-blue-600"></div> Substations
+            <img src="icons/SS.png" className='w-10 h-10'/> Substations
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 rounded-full bg-green-600"></div> DT Stations
+            <img src="icons/DT.png" className='w-10 h-10'/> DT Stations
           </div>
         </div>
       </div>
