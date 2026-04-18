@@ -11,11 +11,30 @@ namespace Hack2on
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            const string FrontendCorsPolicy = "FrontendCorsPolicy";
+
             // Get connection string
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
 
             // Add services to the container
             builder.Services.AddControllers();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(FrontendCorsPolicy, policy =>
+                {
+                    policy
+                        .WithOrigins(
+                            "http://localhost:3000",
+                            "https://localhost:3000",
+                            "http://127.0.0.1:3000",
+                            "https://127.0.0.1:3000",
+                            "http://localhost:3001",
+                            "https://localhost:3001"
+                        )
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
 
 
             // Register Repositories
@@ -36,6 +55,8 @@ namespace Hack2on
 
             // Register Services
             builder.Services.AddScoped<ITransmissionStationService, TransmissionStationService>();
+            builder.Services.AddScoped<ISubstationService, SubstationService>();
+            builder.Services.AddScoped<IDistributionSubstationService, DistributionSubstationService>();
 
             // Add Swagger/OpenAPI
             builder.Services.AddEndpointsApiExplorer();
@@ -51,6 +72,8 @@ namespace Hack2on
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(FrontendCorsPolicy);
 
             app.UseAuthorization();
 
