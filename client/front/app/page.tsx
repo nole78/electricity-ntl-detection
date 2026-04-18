@@ -174,7 +174,7 @@ export default function LandingPage() {
 
         <div className="flex justify-center gap-4">
           <Link
-            href="/visulisation"
+            href="/visualisation"
             className="px-6 py-3 bg-orange-500 hover:bg-orange-600 rounded-lg"
           >
             Open Map
