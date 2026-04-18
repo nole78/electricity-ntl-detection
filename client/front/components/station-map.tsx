@@ -132,13 +132,13 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
 
         <LayersControl position="topright">
           
-          {/* Layer 1: Theft suspected anomalies (Red) */}
-          <LayersControl.Overlay checked name="Theft Suspected">
+          {/* Layer 1: Transmission stations (Red) */}
+          <LayersControl.Overlay checked name="Transmission Stations">
             <LayerGroup>
               {transmissionStations.map((station) => (
                 <Marker key={`trans-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={transmissionIcon}>
                   <Popup>
-                    <span className="text-red-600 font-bold text-xs uppercase tracking-wider">Theft Suspected</span><br/>
+                    <span className="text-red-600 font-bold text-xs uppercase tracking-wider">Transmission Station</span><br/>
                     <strong className="text-lg">{station.Name}</strong><br />
                     Lat: {station.Latitude} | Lng: {station.Longitude}
                   </Popup>
@@ -147,13 +147,13 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
             </LayerGroup>
           </LayersControl.Overlay>
 
-          {/* Layer 2: Ghost/dead meter anomalies (Blue) */}
-          <LayersControl.Overlay checked name="Ghost or Dead Meters">
+          {/* Layer 2: Substations (Blue) */}
+          <LayersControl.Overlay checked name="Substations">
             <LayerGroup>
               {substations.map((station) => (
                 <Marker key={`sub-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={substationIcon}>
                   <Popup>
-                    <span className="text-blue-600 font-bold text-xs uppercase tracking-wider">Ghost or Dead Meters</span><br/>
+                    <span className="text-blue-600 font-bold text-xs uppercase tracking-wider">Substation</span><br/>
                     <strong className="text-lg">{station.Name}</strong><br />
                     Lat: {station.Latitude} | Lng: {station.Longitude}
                   </Popup>
@@ -162,8 +162,8 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
             </LayerGroup>
           </LayersControl.Overlay>
 
-          {/* Layer 3: Normal feeders (Green) with extra details */}
-          <LayersControl.Overlay checked name="Normal Feeders">
+          {/* Layer 3: Distribution transformer stations (Green) */}
+          <LayersControl.Overlay checked name="Distribution Stations (DT)">
             <ZoomAwareDtLayer dtStations={dtStations} onDtSelect={onDtSelect} />
           </LayersControl.Overlay>
 
