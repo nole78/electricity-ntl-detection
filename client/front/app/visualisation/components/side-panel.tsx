@@ -14,19 +14,19 @@ export default function SidePanel({ isOpen, selectedDt, feederInfo, onClose }: S
     : 'translate-x-full opacity-0 pointer-events-none';
 
   return (
-    <aside className={`absolute right-0 top-0 z-1200 h-full w-full max-w-sm border-l border-slate-200 bg-white/95 shadow-2xl backdrop-blur transition-all duration-300 ease-out md:max-w-md ${panelClasses}`}>
-      <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+    <aside className={`absolute right-0 top-0 z-1200 h-full w-full max-w-sm border-l border-emerald-700/60 bg-emerald-900/70 shadow-2xl backdrop-blur transition-all duration-300 ease-out md:max-w-md ${panelClasses}`}>
+      <div className="flex items-center justify-between border-b border-emerald px-5 py-4">
         <h2 className="text-lg font-semibold text-slate-900">DT Details</h2>
         <button
           type="button"
           onClick={onClose}
-          className="rounded-md border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100"
+          className="rounded-md border border-emerald-400/60 bg-emerald-800/40 px-3 py-1.5 text-sm font-medium text-emerald-50 hover:bg-blue-500/10 hover:border-blue-400/60"
         >
           Close
         </button>
       </div>
 
-      <div className="space-y-5 overflow-y-auto p-5 text-sm text-slate-700">
+      <div className="space-y-5 overflow-y-auto p-5 text-sm text-emerald-100/80">
         <section className="space-y-2">
           <h3 className="text-xs font-bold uppercase tracking-wide text-slate-500">Distribution Station</h3>
           <div><strong>Name:</strong> {selectedDt?.Name ?? 'N/A'}</div>
