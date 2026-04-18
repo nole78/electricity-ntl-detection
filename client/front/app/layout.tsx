@@ -27,7 +27,20 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {/*BACKGROUND IMAGE */}
+        <div className="fixed inset-0 -z-20">
+          <img
+            src="/bg.jpg"
+            alt="background"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        {/*COLOR OVERLAY */}
+        <div className="fixed inset-0 -z-10 bg-background/70" />
+
+        {children}
+      </body>
     </html>
   );
 }
