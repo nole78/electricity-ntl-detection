@@ -23,9 +23,10 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = builder.Configuration.GetConnectionString("SotexDb");
+var connectionString = builder.Configuration.GetConnectionString("SotexDb")
+    ?? throw new InvalidOperationException("Connection string 'SotexDb' not found.");
 
-// CORS — frontend on another port needs this
+// CORS frontend on another port needs this
 
 const string CorsPolicy = "AllowFrontend";
 builder.Services.AddCors(options =>
@@ -48,9 +49,9 @@ builder.Services.AddSingleton(analysisConfig);
 // Infrastructure (DB access)
 
 builder.Services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
-builder.Services.AddScoped<IFeederRepository, FeederRepository>();
-builder.Services.AddScoped<IMeterReadRepository, MeterReadRepository>();
-builder.Services.AddScoped<IRegistryRepository, RegistryRepository>();
+builder.Services.AddScoped<IFeederRepository, Hack2on.Infrastructure.FeederRepository>();
+builder.Services.AddScoped<IMeterReadRepository, Hack2on.Infrastructure.MeterReadRepository>();
+builder.Services.AddScoped<IRegistryRepository, Hack2on.Infrastructure.RegistryRepository>();
 builder.Services.AddSingleton<TechnicalLossCalculator>();
 
 // Analysis (pure logic)

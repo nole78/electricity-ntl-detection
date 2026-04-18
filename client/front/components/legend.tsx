@@ -7,19 +7,19 @@ const legendItems: Array<{
 }> = [
   {
     type: "TS",
-    label: "Visokonaponske",
+    label: "High Voltage",
     symbolClass:
       "h-[18px] w-[18px] rounded-full bg-red-600 border-2 border-white ring-2 ring-red-900"
   },
   {
     type: "SS",
-    label: "Srednjenaponske",
+    label: "Medium Voltage",
     symbolClass:
       "h-4 w-4 rounded-[4px] bg-blue-600 border-2 border-white ring-2 ring-blue-900"
   },
   {
     type: "DT",
-    label: "Niskonaponske",
+    label: "Low Voltage",
     symbolClass:
       "h-[14px] w-[14px] rotate-45 bg-green-600 border-2 border-white ring-2 ring-green-900"
   }

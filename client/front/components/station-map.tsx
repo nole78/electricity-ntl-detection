@@ -1,8 +1,10 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup, LayersControl, LayerGroup } from 'react-leaflet';
+import { useMemo, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, LayersControl, LayerGroup, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { groupDtStations } from '@/app/visualisation/helpers/groupDtStations';
 
 // Base interface for Transmission and Substations
 export interface BaseStation {
@@ -24,6 +26,7 @@ interface MapProps {
   transmissionStations: BaseStation[];
   substations: BaseStation[];
   dtStations: DtStation[];
+  onDtSelect?: (station: DtStation) => void;
 }
 
 const createMarkerIcon = (svg: string) => {
@@ -59,12 +62,69 @@ const dtIcon = createMarkerIcon(`
   </svg>
 `);
 
-export default function SubstationMap({ transmissionStations, substations, dtStations }: MapProps) {
-  const defaultCenter: [number, number] = [44.0165, 21.0059]; // Center of Serbia
+const createDtClusterIcon = (count: number) => createMarkerIcon(`
+  <svg width="42" height="42" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" aria-label="DT cluster icon">
+    <circle cx="21" cy="21" r="18" fill="#15803D" stroke="#ffffff" stroke-width="3"/>
+    <text x="21" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">${count}</text>
+  </svg>
+`);
+
+const getGroupedCount = (station: DtStation): number => {
+  if (typeof station.MeterId !== 'string') {
+    return 1;
+  }
+
+  const value = Number.parseInt(station.MeterId.split(' ')[0], 10);
+  return Number.isFinite(value) && value > 0 ? value : 1;
+};
+
+function ZoomAwareDtLayer({
+  dtStations,
+  onDtSelect,
+}: {
+  dtStations: DtStation[];
+  onDtSelect?: (station: DtStation) => void;
+}) {
+  const [, setRevision] = useState(0);
+
+  const map = useMapEvents({
+    zoomend: () => {
+      setRevision((value) => value + 1);
+    },
+  });
+
+  const currentZoom = map.getZoom();
+  const groupedStations = useMemo(() => groupDtStations(dtStations, currentZoom), [dtStations, currentZoom]);
 
   return (
-    <div style={{ height: '600px', width: '100%', borderRadius: '8px', overflow: 'hidden', border: '1px solid #e5e7eb' }}>
-      <MapContainer center={defaultCenter} zoom={7} style={{ height: '100%', width: '100%' }}>
+    <LayerGroup>
+      {groupedStations.map((station) => {
+        const groupedCount = getGroupedCount(station);
+        const icon = groupedCount > 1 ? createDtClusterIcon(groupedCount) : dtIcon;
+
+        return (
+          <Marker
+            key={`dt-${station.Id}`}
+            position={[station.Latitude, station.Longitude]}
+            icon={icon}
+            eventHandlers={{
+              click: () => {
+                onDtSelect?.(station);
+              },
+            }}
+          />
+        );
+      })}
+    </LayerGroup>
+  );
+}
+
+export default function SubstationMap({ transmissionStations, substations, dtStations, onDtSelect }: MapProps) {
+  const defaultCenter: [number, number] = [9.0765, 7.3986]; // Abuja, Nigeria
+
+  return (
+    <div style={{ height: '100%', width: '100%', overflow: 'hidden' }}>
+      <MapContainer center={defaultCenter} zoom={10} style={{ height: '100%', width: '100%' }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -72,13 +132,13 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
 
         <LayersControl position="topright">
           
-          {/* Layer 1: Theft suspected anomalies (Red) */}
-          <LayersControl.Overlay checked name="Theft Suspected">
+          {/* Layer 1: Transmission stations (Red) */}
+          <LayersControl.Overlay checked name="Transmission Stations">
             <LayerGroup>
               {transmissionStations.map((station) => (
                 <Marker key={`trans-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={transmissionIcon}>
                   <Popup>
-                    <span className="text-red-600 font-bold text-xs uppercase tracking-wider">Theft Suspected</span><br/>
+                    <span className="text-red-600 font-bold text-xs uppercase tracking-wider">Transmission Station</span><br/>
                     <strong className="text-lg">{station.Name}</strong><br />
                     Lat: {station.Latitude} | Lng: {station.Longitude}
                   </Popup>
@@ -87,13 +147,13 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
             </LayerGroup>
           </LayersControl.Overlay>
 
-          {/* Layer 2: Ghost/dead meter anomalies (Blue) */}
-          <LayersControl.Overlay checked name="Ghost or Dead Meters">
+          {/* Layer 2: Substations (Blue) */}
+          <LayersControl.Overlay checked name="Substations">
             <LayerGroup>
               {substations.map((station) => (
                 <Marker key={`sub-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={substationIcon}>
                   <Popup>
-                    <span className="text-blue-600 font-bold text-xs uppercase tracking-wider">Ghost or Dead Meters</span><br/>
+                    <span className="text-blue-600 font-bold text-xs uppercase tracking-wider">Substation</span><br/>
                     <strong className="text-lg">{station.Name}</strong><br />
                     Lat: {station.Latitude} | Lng: {station.Longitude}
                   </Popup>
@@ -102,25 +162,9 @@ export default function SubstationMap({ transmissionStations, substations, dtSta
             </LayerGroup>
           </LayersControl.Overlay>
 
-          {/* Layer 3: Normal feeders (Green) with extra details */}
-          <LayersControl.Overlay checked name="Normal Feeders">
-            <LayerGroup>
-              {dtStations.map((station) => (
-                <Marker key={`dt-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={dtIcon}>
-                  <Popup>
-                    <span className="text-green-600 font-bold text-xs uppercase tracking-wider">Normal</span><br/>
-                    <strong className="text-lg">{station.Name}</strong><br />
-                    <div className="mt-2 text-sm">
-                      {station.NameplateRating && <div><strong>Snaga:</strong> {station.NameplateRating} kVA</div>}
-                      {station.MeterId && <div><strong>Brojilo:</strong> {station.MeterId}</div>}
-                      {station.Feeder11Id && <div><strong>SN vod:</strong> {station.Feeder11Id}</div>}
-                      {station.Feeder33Id && <div><strong>VN vod:</strong> {station.Feeder33Id}</div>}
-                      <div className="mt-1 text-gray-500 text-xs">Lat: {station.Latitude} | Lng: {station.Longitude}</div>
-                    </div>
-                  </Popup>
-                </Marker>
-              ))}
-            </LayerGroup>
+          {/* Layer 3: Distribution transformer stations (Green) */}
+          <LayersControl.Overlay checked name="Distribution Stations (DT)">
+            <ZoomAwareDtLayer dtStations={dtStations} onDtSelect={onDtSelect} />
           </LayersControl.Overlay>
 
         </LayersControl>

@@ -17,11 +17,11 @@ export function StationDetailsPanel({ node, onClose }: Props) {
   if (!node) return null;
 
   return (
-    <div className="absolute top-0 right-0 h-full w-[320px] bg-white shadow-xl border-l border-gray-200 z-[1000] p-5 flex flex-col">
+    <div className="absolute top-0 right-0 h-full w-[320px] bg-white shadow-xl border-l border-gray-200 z-1000 p-5 flex flex-col">
       
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">Detalji stanice</h2>
+        <h2 className="text-lg font-semibold">Station Details</h2>
         <button
           onClick={onClose}
           className="text-gray-400 hover:text-gray-700"
@@ -33,17 +33,17 @@ export function StationDetailsPanel({ node, onClose }: Props) {
       {/* Content */}
       <div className="space-y-3 text-sm">
         <div>
-          <div className="text-gray-400">Naziv</div>
+          <div className="text-gray-400">Name</div>
           <div className="font-medium">{node.name}</div>
         </div>
 
         <div>
-          <div className="text-gray-400">Tip</div>
+          <div className="text-gray-400">Type</div>
           <div>{node.type}</div>
         </div>
 
         <div>
-          <div className="text-gray-400">Koordinate</div>
+          <div className="text-gray-400">Coordinates</div>
           <div>
             {node.latitude.toFixed(5)}, {node.longitude.toFixed(5)}
           </div>
