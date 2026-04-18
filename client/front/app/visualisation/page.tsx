@@ -7,7 +7,7 @@ import type {DtStation} from '@/components/station-map';
 import { AnomalyApiClient } from '@/api-client/anomaly/AnomalyApiClient';
 import type { FeederAnomaly } from '@/api-client/anomaly/IAnomalyApiClient';
 
-const PowerGridMap = dynamic(() => import("@/components/station-map"), {
+const PowerGridMap = dynamic(() => import('@/components/station-map'), {
   ssr: false,
   loading: () => <div className="h-150 w-full animate-pulse bg-gray-100 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500">Učitavanje mape...</div>
 });
@@ -24,7 +24,9 @@ const mapAnomalyToStation = (anomaly: FeederAnomaly): DtStation => ({
 });
 
 export default function PowerGridDashboard() {
-  const [graph, setGraph] = useState<Graph | null>(null);
+  const [transmissionStations, setTransmissionStations] = useState<BaseStation[]>([]);
+  const [substations, setSubstations] = useState<BaseStation[]>([]);
+  const [dtStations, setDtStations] = useState<DtStation[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -110,7 +112,7 @@ export default function PowerGridDashboard() {
           substations={substations}
           dtStations={dtStations}
         />
-      </div>
+      )}
     </main>
   );
 }
