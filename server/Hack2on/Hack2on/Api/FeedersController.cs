@@ -12,7 +12,7 @@ public sealed class FeedersController : ControllerBase
     private readonly IMeterReadRepository _meterReadRepository;
     private readonly AnalysisConfig _config;
 
-    // Dataset ends here — default "to" when client doesn't pass one.
+    // Dataset ends here default "to" when client doesn't pass one.
     // Live DB would use DateTime.UtcNow. Static hackathon data ends 2026-04-16.
     private static readonly DateTime DatasetEnd = new(2026, 4, 16);
 
@@ -28,7 +28,7 @@ public sealed class FeedersController : ControllerBase
 
     /// <summary>
     /// Returns every analyzable Feeder11 with its anomaly classification.
-    /// Normal feeders included — frontend filters client-side.
+    /// Normal feeders included frontend filters client-side.
     /// Sorted most-anomalous first.
     /// </summary>
     [HttpGet("anomalies")]

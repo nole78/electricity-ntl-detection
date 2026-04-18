@@ -20,7 +20,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-// CORS — frontend on another port needs this
+// CORS frontend on another port needs this
 
 const string CorsPolicy = "AllowFrontend";
 builder.Services.AddCors(options =>
