@@ -12,7 +12,7 @@
         public DateTime WindowEnd { get; init; }
 
         /// <summary>
-        /// Total energy (kWh) flowing through the feeder head meter in the window.
+        /// Total energy (kWh) flowing through the feeder head meter in the window
         /// Sum of hourly deltas X meter multiplier factor
         /// </summary>
         public double TotalEnergyKwh { get; init; }
