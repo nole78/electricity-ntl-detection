@@ -1,100 +1,114 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
-
-import type { Graph } from "@/domain/models/Graph";
-import { TransmissionStationApiClient } from "@/api-client/TransmissionStationApiClient";
-
-import { Header } from "@/components/header";
-import { Legend } from "@/components/legend";
-import { MapCard } from "@/components/map-card";
-import { StationDetailsPanel } from "@/components/station-details-panel";
+import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
+import type  {BaseStation} from '@/components/station-map';
+import type {DtStation} from '@/components/station-map';
+import { AnomalyApiClient } from '@/api-client/anomaly/AnomalyApiClient';
+import type { FeederAnomaly } from '@/api-client/anomaly/IAnomalyApiClient';
 
 const PowerGridMap = dynamic(() => import("@/components/station-map"), {
   ssr: false,
-  loading: () => (
-    <div className="h-[600px] flex items-center justify-center text-gray-400">
-      Učitavanje mape...
-    </div>
-  )
+  loading: () => <div className="h-150 w-full animate-pulse bg-gray-100 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500">Učitavanje mape...</div>
 });
-const transmissionStationClient = new TransmissionStationApiClient("https://localhost:7057");
+
+const anomalyApiClient = new AnomalyApiClient('https://localhost:7061');
+
+const mapAnomalyToStation = (anomaly: FeederAnomaly): DtStation => ({
+  Id: anomaly.feeder11Id,
+  Name: `${anomaly.feeder11Name} (${anomaly.anomalyScorePercent.toFixed(1)}%)`,
+  Latitude: anomaly.centroidLatitude,
+  Longitude: anomaly.centroidLongitude,
+  Feeder11Id: anomaly.feeder11Id,
+  MeterId: anomaly.classification
+});
 
 export default function PowerGridDashboard() {
   const [graph, setGraph] = useState<Graph | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const selectedNode =
-  graph?.nodes.find(n => n.id === selectedNodeId) || null;
-  
-useEffect(() => {
-  const controller = new AbortController();
-  let isMounted = true;
+  useEffect(() => {
+    const abortController = new AbortController();
 
-  const load = async () => {
-    try {
-      const nodes = await transmissionStationClient.getAllTransmissionStations(
-        controller.signal
-      );
+    const loadAnomalies = async () => {
+      try {
+        const anomalies = await anomalyApiClient.getAnomalies(abortController.signal);
+        setErrorMessage(null);
 
-      if (!isMounted) return;
+        setTransmissionStations(
+          anomalies
+            .filter((item) => item.classification === 'TheftSuspected')
+            .map(mapAnomalyToStation)
+        );
 
-      setGraph({ nodes, edges: [] });
-    }catch (e: unknown) {
-      if (e instanceof Error && e.name === "AbortError") {
-        return;
+        setSubstations(
+          anomalies
+            .filter((item) => item.classification === 'GhostOrDeadMeters')
+            .map(mapAnomalyToStation)
+        );
+
+        setDtStations(
+          anomalies
+            .filter((item) => item.classification === 'Normal')
+            .map(mapAnomalyToStation)
+        );
+      } catch (error) {
+        if (!abortController.signal.aborted) {
+          const message = error instanceof Error ? error.message : 'Unknown fetch error';
+          console.error('Failed to fetch feeder anomalies:', message);
+          setErrorMessage(message);
+          setTransmissionStations([]);
+          setSubstations([]);
+          setDtStations([]);
+        }
+      } finally {
+        if (!abortController.signal.aborted) {
+          setLoading(false);
+        }
       }
+    };
 
-      console.error(e);
+    loadAnomalies();
 
-      if (isMounted) {
-        setGraph({ nodes: [], edges: [] });
-      }
-} finally {
-      if (isMounted) setLoading(false);
-    }
-  };
-
-  load();
-
-  return () => {
-    isMounted = false;
-    controller.abort();
-  };
-}, []);
+    return () => abortController.abort();
+  }, []);
 
   return (
     <main className="p-8 max-w-7xl mx-auto">
-      <Header />
-
-      <div className="mb-4 flex items-center justify-between">
-        <Legend />
-
-        {/* future: filters */}
-        <div className="text-sm text-gray-400">
-          {graph?.nodes.length ?? 0} stanica
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">Feeder Anomalije</h1>
+        <p className="text-gray-500 mt-2">Prikaz centroida vodova sa detektovanim anomalijama i normalnim radom</p>
+      </div>
+      
+      {/* Legend */}
+      <div className="flex flex-wrap gap-6 mb-4 text-sm font-medium">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 rounded-full bg-red-600"></div> Theft Suspected
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 rounded-full bg-blue-600"></div> Ghost or Dead Meters
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 rounded-full bg-green-600"></div> Normal
         </div>
       </div>
 
-      <div className="relative">
-      <MapCard>
-        {loading || !graph ? (
-          <div className="h-[600px] flex items-center justify-center text-gray-400">
-            Učitavanje...
-          </div>
-        ) : (
-          <PowerGridMap
-            graph={graph}
-            onNodeClick={setSelectedNodeId}
-          />
-          )}
-        </MapCard>
+      {errorMessage && (
+        <div className="mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          {errorMessage}
+        </div>
+      )}
 
-        <StationDetailsPanel
-          node={selectedNode}
-          onClose={() => setSelectedNodeId(null)}
+      {loading ? (
+        <div className="h-150 w-full animate-pulse bg-gray-100 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500">
+          Učitavanje anomalija...
+        </div>
+      ) : (
+        <PowerGridMap
+          transmissionStations={transmissionStations}
+          substations={substations}
+          dtStations={dtStations}
         />
       </div>
     </main>

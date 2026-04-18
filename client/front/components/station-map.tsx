@@ -72,50 +72,61 @@ export default function PowerGridMap({ graph, onNodeClick }: Props) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {/* EDGEs */}
-      {graph.edges.map(edge => {
-        const from = graph.nodes.find(n => n.id === edge.from);
-        const to = graph.nodes.find(n => n.id === edge.to);
+        <LayersControl position="topright">
+          
+          {/* Layer 1: Theft suspected anomalies (Red) */}
+          <LayersControl.Overlay checked name="Theft Suspected">
+            <LayerGroup>
+              {transmissionStations.map((station) => (
+                <Marker key={`trans-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={transmissionIcon}>
+                  <Popup>
+                    <span className="text-red-600 font-bold text-xs uppercase tracking-wider">Theft Suspected</span><br/>
+                    <strong className="text-lg">{station.Name}</strong><br />
+                    Lat: {station.Latitude} | Lng: {station.Longitude}
+                  </Popup>
+                </Marker>
+              ))}
+            </LayerGroup>
+          </LayersControl.Overlay>
 
-        if (!from || !to) return null;
+          {/* Layer 2: Ghost/dead meter anomalies (Blue) */}
+          <LayersControl.Overlay checked name="Ghost or Dead Meters">
+            <LayerGroup>
+              {substations.map((station) => (
+                <Marker key={`sub-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={substationIcon}>
+                  <Popup>
+                    <span className="text-blue-600 font-bold text-xs uppercase tracking-wider">Ghost or Dead Meters</span><br/>
+                    <strong className="text-lg">{station.Name}</strong><br />
+                    Lat: {station.Latitude} | Lng: {station.Longitude}
+                  </Popup>
+                </Marker>
+              ))}
+            </LayerGroup>
+          </LayersControl.Overlay>
 
-        return (
-          <Polyline
-            key={edge.id}
-            positions={[
-              [from.latitude, from.longitude],
-              [to.latitude, to.longitude]
-            ]}
-            pathOptions={{
-              color: FeederColorService.getColor(edge.voltage),
-              weight: 3
-            }}
-          />
-        );
-      })}
+          {/* Layer 3: Normal feeders (Green) with extra details */}
+          <LayersControl.Overlay checked name="Normal Feeders">
+            <LayerGroup>
+              {dtStations.map((station) => (
+                <Marker key={`dt-${station.Id}`} position={[station.Latitude, station.Longitude]} icon={dtIcon}>
+                  <Popup>
+                    <span className="text-green-600 font-bold text-xs uppercase tracking-wider">Normal</span><br/>
+                    <strong className="text-lg">{station.Name}</strong><br />
+                    <div className="mt-2 text-sm">
+                      {station.NameplateRating && <div><strong>Snaga:</strong> {station.NameplateRating} kVA</div>}
+                      {station.MeterId && <div><strong>Brojilo:</strong> {station.MeterId}</div>}
+                      {station.Feeder11Id && <div><strong>SN vod:</strong> {station.Feeder11Id}</div>}
+                      {station.Feeder33Id && <div><strong>VN vod:</strong> {station.Feeder33Id}</div>}
+                      <div className="mt-1 text-gray-500 text-xs">Lat: {station.Latitude} | Lng: {station.Longitude}</div>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+            </LayerGroup>
+          </LayersControl.Overlay>
 
-      {/* NODES */}
-      {graph.nodes.map(node => (
-        <Marker
-          key={node.id}
-          position={[node.latitude, node.longitude]}
-          icon={getNodeIcon(node.type)}
-          eventHandlers={{
-            click: () => onNodeClick?.(node.id)
-          }}
-        >
-          <Popup>
-            <div className="text-sm">
-              <div className="font-bold">{node.name}</div>
-              <div>Tip: {node.type}</div>
-              <div>
-                Lokacija: {node.latitude.toFixed(4)},{" "}
-                {node.longitude.toFixed(4)}
-              </div>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+        </LayersControl>
+      </MapContainer>
+    </div>
   );
 }
