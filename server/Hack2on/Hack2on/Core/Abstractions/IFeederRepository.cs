@@ -1,4 +1,5 @@
 ﻿using Hack2on.Core.Entities;
+using Hack2on.Core.Models;
 
 namespace Hack2on.Core.Abstractions
 {
@@ -19,6 +20,9 @@ namespace Hack2on.Core.Abstractions
         /// </summary>
         Task<IReadOnlyList<DistributionSubstation>> GetDtsForFeederAsync(
             int feeder11Id, CancellationToken ct = default);
+
+        Task<IReadOnlyDictionary<int, FeederGeometry>> GetFeederGeometryAsync(
+            CancellationToken ct = default);
 
 
     }

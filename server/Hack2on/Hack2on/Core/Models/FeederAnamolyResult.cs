@@ -27,8 +27,6 @@
         /// </summary>
         public int EstimatedActiveDtCount { get; init; }
 
-        /// <summary>Centroid of DTs under this feede for map rendering.</summary>
-        public double? CentroidLatitude { get; init; }
-        public double? CentroidLongitude { get; init; }
+        public double ZScore { get; init; }
     }
 }

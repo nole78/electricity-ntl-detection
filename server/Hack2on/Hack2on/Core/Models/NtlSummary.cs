@@ -14,7 +14,7 @@
         public double TotalEnergyDeliveredKwh { get; init; }
         public double EstimatedNtlEnergyKwh { get; init; }
         public double EstimatedNtlPercent { get; init; }
-
+        public double TotalTechnicalLossKwh { get; init; }
         public IReadOnlyList<FeederAnomalyResult> TopOffenders { get; init; } = [];
     }
 }

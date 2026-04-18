@@ -9,7 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // MVC / API / OpenAPI
 
-builder.Services.AddControllers();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters
+            .Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -39,7 +45,8 @@ builder.Services.AddSingleton(analysisConfig);
 builder.Services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddScoped<IFeederRepository, FeederRepository>();
 builder.Services.AddScoped<IMeterReadRepository, MeterReadRepository>();
-
+builder.Services.AddScoped<IRegistryRepository, RegistryRepository>();
+builder.Services.AddSingleton<TechnicalLossCalculator>();
 
 // Analysis (pure logic)
 
@@ -72,3 +79,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
