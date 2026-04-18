@@ -1,9 +1,9 @@
 import { VoltageLevel } from "../enums/VoltageLevel";
+import { Position } from "./Position";
 
 export interface Node {
   id: string;
   name: string;
-  lat: number;
-  lon: number;
   type: VoltageLevel;
+  position: Position;
 }
