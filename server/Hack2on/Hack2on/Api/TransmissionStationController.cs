@@ -5,7 +5,7 @@ using Hack2on.Core.DTOs.TransmissionStationDTOs;
 namespace Hack2on.Api
 {
     [ApiController]
-    [Route("api/transmission-stations")]
+    [Route("api/transmission-stations/nzm")]
     public class TransmissionStationController(ITransmissionStationService service) : ControllerBase
     {
         private readonly ITransmissionStationService _service = service;

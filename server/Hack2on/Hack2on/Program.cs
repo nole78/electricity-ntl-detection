@@ -1,8 +1,12 @@
 using Hack2on.Analysis;
 using Hack2on.Core.Abstractions;
+using Hack2on.Core.Abstractions.Services;
 using Hack2on.Core.Common;
 using Hack2on.Infrastructure;
 using Hack2on.Infrastructure.Persistence;
+using Hack2on.Infrastructure.RepositoryImplementations;
+using Hack2on.Infrastructure.ServiceImplementation;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +23,7 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var connectionString = builder.Configuration.GetConnectionString("SotexDb");
 
 // CORS — frontend on another port needs this
 
@@ -57,6 +62,9 @@ builder.Services.AddSingleton<AnomalyScorer>();
 builder.Services.AddScoped<NtlDetectionPipeline>();
 builder.Services.AddScoped<IAnomalyDetector, CachedAnomalyDetector>();
 
+
+builder.Services.AddScoped<IOutageRepository>(_ => new OutageRepository(connectionString));
+builder.Services.AddScoped<IOutageService, OutageService>();
 
 // In-memory cache for expensive aggregation
 
