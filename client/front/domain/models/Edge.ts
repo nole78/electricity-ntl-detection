@@ -1,4 +1,4 @@
-import { FeederVoltage } from "../enums/FeederVoltage";
+import { FeederVoltage } from "../types/FeederVoltage";
 
 export interface Edge {
   id: string;

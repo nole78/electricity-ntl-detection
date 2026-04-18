@@ -1,4 +1,4 @@
-import { VoltageLevel } from "@/domain/enums/VoltageLevel";
+import { VoltageLevel } from "@/domain/types/VoltageLevel";
 
 export interface NodeDTO {
   id: string;

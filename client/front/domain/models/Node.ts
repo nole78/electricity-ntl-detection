@@ -1,4 +1,4 @@
-import { VoltageLevel } from "../enums/VoltageLevel";
+import { VoltageLevel } from "../types/VoltageLevel";
 import { Position } from "./Position";
 
 export interface Node {
