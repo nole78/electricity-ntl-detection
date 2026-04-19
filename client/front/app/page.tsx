@@ -40,6 +40,12 @@ export default function LandingPage() {
             >
               View Summary
             </Link>
+            <Link
+              href="/outages"
+              className="rounded-xl border border-orange-400/60 bg-orange-500/15 px-6 py-3 font-semibold text-orange-100 transition hover:bg-orange-500/25"
+            >
+              View Outages
+            </Link>
           </div>
         </section>
 
