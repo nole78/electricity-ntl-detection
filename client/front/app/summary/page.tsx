@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { SummaryApiClient } from "@/api-client/summary-api/SummaryApiClient";
 import type {
   AnomalyClassification,
@@ -84,6 +85,7 @@ function OffendersTable({ rows }: { rows: FeederAnomalyResult[] }) {
 }
 
 export default function SummaryPage() {
+  const router = useRouter();
   const summaryApiClient = useMemo(() => new SummaryApiClient(), []);
   const [summary, setSummary] = useState<NtlSummaryResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -121,6 +123,14 @@ export default function SummaryPage() {
       </div>
 
       <div className="relative mx-auto w-full max-w-7xl px-6 pb-14 pt-10 md:px-10">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="mb-4 inline-flex items-center rounded-xl border border-orange-400/50 bg-orange-500/10 px-4 py-2 text-sm font-semibold text-orange-200 transition hover:bg-orange-500/20"
+        >
+          Back
+        </button>
+
         {/* HEADER */}
       <header className="rounded-3xl border border-emerald-700/60 bg-emerald-900/70 p-7 shadow-2xl backdrop-blur md:p-10 mb-8">        <div className="inline-flex rounded-full border border-orange-400/40 bg-orange-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-orange-300">
           Grid Analytics

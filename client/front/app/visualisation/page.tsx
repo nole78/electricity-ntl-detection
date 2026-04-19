@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import type { BaseStation } from '@/components/station-map';
 import type { DtStation } from '@/components/station-map';
@@ -69,6 +70,7 @@ const isBaseStation = (station: BaseStation | null): station is BaseStation => s
 const isDtStation = (station: DtStation | null): station is DtStation => station !== null;
 
 export default function PowerGridDashboard() {
+  const router = useRouter();
   const [transmissionStations, setTransmissionStations] = useState<BaseStation[]>([]);
   const [substations, setSubstations] = useState<BaseStation[]>([]);
   const [dtStations, setDtStations] = useState<DtStation[]>([]);
@@ -160,6 +162,14 @@ export default function PowerGridDashboard() {
   return (
     <main className="relative h-screen w-screen overflow-hidden bg-slate-100">
       <div className="absolute left-4 top-4 z-1200 w-[calc(100%-2rem)] max-w-xl rounded-xl border border-emerald-700/60 bg-emerald-900/70 p-4 shadow-lg backdrop-blur">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="mb-3 inline-flex items-center rounded-lg border border-orange-400/50 bg-orange-500/10 px-3 py-1.5 text-xs font-semibold text-orange-100 transition hover:bg-orange-500/20"
+        >
+          Back
+        </button>
+
         <h1 className="text-xl font-bold text-slate-900 leading-tight tracking-tight">Power Grid Stations</h1>
         <p className="mt-1 text-sm text-emerald-100/80">Click a DT marker to open station details and its connected feeder.</p>
         <div className="mt-3 flex flex-wrap gap-4 text-sm font-medium text-slate-700">

@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { OutageApiClient } from "@/api-client/outeage-api-client/OutageApiClient";
 import type { OutageInfo, OutageType } from "@/api-client/outeage-api-client/IOutageApiClient";
@@ -216,6 +217,7 @@ function OutageTable({
 }
 
 export default function OutagesPage() {
+  const router = useRouter();
   const outageApiClient = useMemo(() => new OutageApiClient(), []);
   const [outages, setOutages] = useState<OutageState>({ current: [], past: [] });
   const [selectedMapPoint, setSelectedMapPoint] = useState<OutageMapPoint | null>(null);
@@ -290,6 +292,14 @@ export default function OutagesPage() {
       </div>
 
       <div className="relative mx-auto w-full max-w-7xl px-6 pb-14 pt-10 md:px-10">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="mb-5 inline-flex items-center rounded-xl border border-orange-400/50 bg-orange-500/10 px-4 py-2 text-sm font-semibold text-orange-200 transition hover:bg-orange-500/20"
+        >
+          Back
+        </button>
+
         <header className="rounded-3xl border border-emerald-700/60 bg-emerald-900/70 p-7 shadow-2xl backdrop-blur md:p-10">
           <div className="inline-flex rounded-full border border-orange-400/40 bg-orange-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-orange-300">
             Grid Outage Monitor
