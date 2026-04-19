@@ -119,7 +119,6 @@ namespace Hack2on.Infrastructure.ServiceImplementation
 
             return result
                 .OrderByDescending(x => x.DetectedAt)
-                .Take(100)
                 .ToList();
         }
 
@@ -179,7 +178,6 @@ namespace Hack2on.Infrastructure.ServiceImplementation
 
             return result
                 .OrderByDescending(x => x.DetectedAt)
-                .Take(100)
                 .ToList();
         }
     }

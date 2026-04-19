@@ -14,6 +14,7 @@
                         Ts
                     ) AS GapInMinutes
                 FROM [dbo].[MeterReads]
+                WHERE Ts >= DATEADD(DAY, -7, GETDATE())
             ),
             ValidGaps AS (
                 SELECT *
@@ -21,7 +22,7 @@
                 WHERE PreviousReadTime IS NOT NULL
                   AND GapInMinutes > 60
             )
-            SELECT TOP 100
+            SELECT
                 vg.MeterId,
                 vg.PreviousReadTime AS PowerLostTime,
                 vg.CurrentReadTime AS PowerRestoredTime,
@@ -62,8 +63,9 @@
                     mr.Ts AS LastReadTime,
                     ROW_NUMBER() OVER (PARTITION BY mr.Mid ORDER BY mr.Ts DESC) AS rn
                 FROM [dbo].[MeterReads] mr
+                WHERE mr.Ts >= DATEADD(DAY, -7, GETDATE())
             )
-            SELECT TOP 100
+            SELECT
                 lr.MeterId,
                 lr.LastReadTime AS DetectedAt,
                 DATEDIFF(MINUTE, lr.LastReadTime, GETDATE()) AS OutageDurationMinutes
@@ -85,7 +87,7 @@
 
         public const string Get0OrNullMeterReads = @"
             WITH AllStationsMeters AS (
-                SELECT TOP 100 'Distribution Substation' AS StationType, Name AS StationName, MeterId
+                SELECT 'Distribution Substation' AS StationType, Name AS StationName, MeterId
                 FROM [dbo].[DistributionSubstation]
                 WHERE MeterId IS NOT NULL
 
@@ -108,6 +110,7 @@
                     mr.*,
                     ROW_NUMBER() OVER (PARTITION BY mr.Mid ORDER BY mr.Ts DESC) AS rn
                 FROM [dbo].[MeterReads] mr
+                WHERE mr.Ts >= DATEADD(DAY, -7, GETDATE())
             )
             SELECT 
                 asm.StationType,
