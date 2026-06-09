@@ -6,6 +6,12 @@ This repository contains:
 - A Next.js frontend in client/front
 - An ASP.NET Core Web API backend in server/Hack2on/Hack2on
 
+## Live Demo
+
+### Frontend
+
+https://ntl-detection-system-iota.vercel.app
+
 ## Tech Stack
 
 ### Client
